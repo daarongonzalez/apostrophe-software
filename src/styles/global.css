@@ -1,0 +1,131 @@
+/* ─── Tokens ─────────────────────────────────────────────── */
+:root {
+  --ink: #1C1D1F;
+  --white: #FFFFFF;
+  --slate: #3B5268;
+  --muted: #6D7073;
+  --footer-muted: #8A9199;
+  --footer-meta: #A9AEB2;
+  --stat-text: #C9CDD1;
+  --surface: #F0F4F7;
+  --border: #DDE2E7;
+  --border-2: #E4E7EB;
+  --rule-dark: #2F3133;
+  --dot-idle: #4A4D50;
+  --blue: #1E76C7;
+  --teal: #1FC8A9;
+  --teal-deep: #14807C;
+  --teal-bright: #2FE0BE;
+  --gradient: linear-gradient(135deg, #1E76C7, #1FC8A9);
+
+  --font-sans: 'Geist', system-ui, sans-serif;
+  --font-mono: 'Space Mono', ui-monospace, monospace;
+  --font-display: 'Anton', Impact, sans-serif;
+
+  /* Page gutter: 56px, growing so content never exceeds the 1068px design width */
+  --gutter: max(56px, calc((100% - 1068px) / 2));
+
+  --noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .22 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+@media (max-width: 700px) {
+  :root { --gutter: 20px; }
+}
+
+/* ─── Base ───────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--white);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; }
+h1, h2, h3 { margin: 0; }
+p { margin: 0; }
+button { font: inherit; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+.pad-x { padding-left: var(--gutter); padding-right: var(--gutter); }
+
+/* ─── Type ───────────────────────────────────────────────── */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 13.2px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.eyebrow--marked { display: inline-flex; align-items: center; gap: 9px; }
+.eyebrow__mark {
+  width: 12px; height: 12px; display: block; flex: none;
+  background: var(--gradient);
+  border: 1px solid var(--border);
+}
+.heading {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  letter-spacing: -.02em;
+}
+.lead { color: var(--slate); text-wrap: pretty; }
+
+/* ─── Buttons & links ────────────────────────────────────── */
+.btn {
+  display: inline-block;
+  background: var(--ink);
+  color: var(--white);
+  font-weight: 600;
+  border: 0;
+  cursor: pointer;
+}
+.btn:hover, .btn:focus-visible { background: var(--gradient); }
+.btn--outline {
+  background: var(--white);
+  color: var(--ink);
+  border: 1.5px solid var(--ink);
+}
+.btn--outline:hover, .btn--outline:focus-visible { background: var(--white); }
+.text-link {
+  align-self: flex-start;
+  font-size: 16px;
+  font-weight: 600;
+  padding-bottom: 3px;
+  border-bottom: 1.5px solid var(--ink);
+}
+
+:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+
+/* ─── Shared textures ────────────────────────────────────── */
+/* Blue/teal mesh used behind framed images */
+.mesh {
+  background:
+    var(--noise),
+    radial-gradient(70% 90% at var(--m1, 15% 85%), #1E76C7 0%, rgba(30,118,199,0) 70%),
+    radial-gradient(60% 80% at var(--m2, 85% 10%), #1FC8A9 0%, rgba(31,200,169,0) 70%),
+    radial-gradient(50% 60% at 50% 50%, #8FD8F0 0%, rgba(143,216,240,0) 80%),
+    #5DB7D6;
+}
+
+/* ─── Coming Soon block ──────────────────────────────────── */
+.coming-soon {
+  padding-top: 120px;
+  padding-bottom: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+}
+.coming-soon .eyebrow { color: var(--muted); }
+.coming-soon h2 { font-size: clamp(34px, 4vw, 47px); line-height: 1.02; }
+@media (max-width: 700px) {
+  .coming-soon { padding-top: 80px; padding-bottom: 80px; }
+}

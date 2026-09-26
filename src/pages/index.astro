@@ -1,0 +1,403 @@
+---
+import Base from '../layouts/Base.astro';
+import HeroGrid from '../components/HeroGrid.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { SITE } from '../site';
+
+// Logo strip. Remote images are placeholders from the design and should be
+// swapped for local files in /public/images before launch.
+const partners = [
+  { name: 'Claude', src: '/images/logo-claude.png', height: 22, fit: 'contain' },
+  { name: 'Partner logo', src: 'https://substackcdn.com/image/fetch/$s_!-_bb!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fef1dacb8-b2e2-433d-bb39-1cd0ddeb9c98_1200x1200.jpeg', height: 37, fit: 'cover' },
+  { name: 'OpenAI', src: 'https://cdn.worldvectorlogo.com/logos/openai-wordmark.svg', height: 37, fit: 'contain' },
+  { name: 'Partner logo', src: 'https://pbs.twimg.com/media/HQIfkAsbwAIwwE4.jpg', height: 37, fit: 'cover' },
+];
+
+const services = [
+  {
+    num: '01',
+    title: 'Enablement sprints',
+    body: 'Three weeks, our engineers and your team. We observe, audit, and strategize what AI can do for your org. Get to the value, cut the noise.',
+    img: '/images/fluent-sprints.webp',
+    alt: 'Apostrophe presenting a workshop on making content go further with AI',
+    pos: '50% 50%',
+    mesh: ['15% 85%', '85% 10%'],
+    flip: false,
+  },
+  {
+    num: '02',
+    title: 'Forward deployed',
+    body: 'An engineer inside your org running product planning and development. Training your team to maintain the tools they help build with our team.',
+    img: '/images/fluent-forward-deployed.webp',
+    alt: 'Apostrophe engineer leading a session at Silicon Slopes, Utah',
+    pos: '50% 100%',
+    mesh: ['85% 90%', '10% 10%'],
+    flip: true,
+  },
+  {
+    num: '03',
+    title: 'Org-wide curriculum',
+    body: 'When our sprint is complete, we leave you with a library of org specific content, how to docs, recordings, all to keep you growing.',
+    img: '/images/fluent-curriculum.webp',
+    alt: 'Title slide from the Intermediate Development with Claude Code workshop',
+    pos: '0% 50%',
+    mesh: ['40% 110%', '95% 0%'],
+    flip: false,
+  },
+];
+
+const stats = [
+  { value: '100s', label: 'hours of 1v1 or small business training and workshops' },
+  { value: '2400+', label: 'people trained on their own stack in their own business enviroments' },
+  { value: '$150k', label: 'largest revenue increase from a previous client' },
+  { value: '41%', label: 'average cut in monthly model spend across Claude and ChatGPT' },
+];
+
+const quotes = [
+  {
+    text: '"It\'s rare to come across educators that genuinely want you to win and enthusiastically show up in 1:1 meetings ready to help you build, create and solve problems, that the Apostrophe team.”',
+    name: 'Zack Fore',
+    role: 'Owner - Drovyr',
+    img: '/images/headshot-zack-fore.webp',
+  },
+  {
+    text: '“The workshops are well planned and engaging for all participants, and I\'ve learned so much from the Apostrophe team during them, in online interactions, and in 1:1 sessions.”',
+    name: 'Hilda Soto',
+    role: 'San Diego AI Council',
+    img: '/images/headshot-hilda-soto.webp',
+  },
+];
+---
+<Base
+  title="Apostrophe Software — Translate AI Talk into Revenue"
+  description="We teach, engineer, and translate AI jargon into clear and actionable processes that increase revenue and lower AI spend."
+>
+  <!-- Hero -->
+  <section class="hero">
+    <HeroGrid />
+    <div class="hero__inner pad-x">
+      <div>
+        <div class="eyebrow hero__eyebrow"><span class="hero__mark"></span>Build AI systems and Agents</div>
+        <h1 class="heading hero__title">Translate AI Talk into Revenue</h1>
+        <p class="lead hero__lead">In order for your team to fully adopt AI, you need to understand the language. We teach, engineer, and translate the jargon into clear and actionable processes that increase revenue and lower AI spend.</p>
+        <div class="hero__actions">
+          <a href={SITE.bookingUrl} class="btn hero__btn">Book a demo →</a>
+          <a href="/about" class="btn btn--outline hero__btn hero__btn--outline">Why We Do What We Do</a>
+        </div>
+      </div>
+      <div></div>
+    </div>
+  </section>
+
+  <!-- Logo strip -->
+  <section class="logos pad-x" aria-label="Embedded with">
+    <span class="eyebrow logos__label">Embedded with</span>
+    <div class="logos__row">
+      {partners.map((p) => (
+        <div
+          class="logos__item"
+          role="img"
+          aria-label={p.name}
+          style={`height:${p.height}px;background-image:url("${p.src}");background-size:${p.fit}`}
+        />
+      ))}
+    </div>
+  </section>
+
+  <!-- Becoming AI Fluent -->
+  <section id="services" class="fluent pad-x">
+    <div class="fluent__intro">
+      <h2 class="heading section-title">Becoming AI Fluent</h2>
+      <p class="lead fluent__intro-copy">To get the value unlock from AI integration your team needs to use it well. In order to use it well they need to feel confident in it's ability to improve their lives. We instill confidence and competence by not just teaching your team how to build AI agents and systems, but to be able to talk about and teach it to others around them.</p>
+    </div>
+    <div class="fluent__rows">
+      {services.map((s) => (
+        <div class:list={['fluent__row', { 'fluent__row--flip': s.flip }]}>
+          <div class="framed mesh" style={`--m1:${s.mesh[0]};--m2:${s.mesh[1]}`}>
+            <div class="framed__frame">
+              <img src={s.img} alt={s.alt} loading="lazy" style={`object-position:${s.pos}`} />
+            </div>
+          </div>
+          <div class="fluent__text">
+            <div class="num-chip">{s.num}<span class="num-chip__line"></span></div>
+            <h3 class="heading fluent__title">{s.title}</h3>
+            <p class="lead fluent__body">{s.body}</p>
+            <a href="/about" class="text-link">See how it works →</a>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section class="stats pad-x" aria-label="Results">
+    {stats.map((s) => (
+      <div class="stats__item">
+        <div class="stats__value">{s.value}</div>
+        <div class="stats__label">{s.label}</div>
+      </div>
+    ))}
+  </section>
+
+  <!-- Testimonials -->
+  <section class="praise pad-x">
+    <h2 class="heading section-title praise__title">Past Customers Feel The Power</h2>
+    <div class="praise__feature">
+      <div class="framed framed--tall mesh" style="--m1:10% 100%;--m2:90% 0%">
+        <div class="framed__frame">
+          <img src="/images/two-if-by-sea.webp" alt="Two If By Sea Coin Co. logo" loading="lazy" />
+        </div>
+      </div>
+      <div>
+        <div class="eyebrow praise__kicker">Internal Software Strategy Session</div>
+        <p class="praise__quote">“Apostrophe was incredibly helpful in walking me through what it would take to turn my idea into a real product. Very easy to work with, I highly recommend him.”</p>
+        <div class="praise__who">Owner, Two If by The Sea</div>
+        <div class="praise__name">Jackson McKenna</div>
+      </div>
+    </div>
+    <div class="praise__pair">
+      {quotes.map((q) => (
+        <figure class="praise__card">
+          <blockquote>{q.text}</blockquote>
+          <figcaption class="praise__person">
+            <img src={q.img} alt="" width="48" height="48" loading="lazy" />
+            <div>
+              <div class="praise__person-name">{q.name}</div>
+              <div class="praise__person-role">{q.role}</div>
+            </div>
+          </figcaption>
+        </figure>
+      ))}
+    </div>
+  </section>
+
+  <CtaBand
+    headline="Bring us a problem, not a training budget."
+    body="Thirty minutes. We'll tell you whether a translation sprint is the right shape. Straight to the point, none of the noise."
+    ctaLabel="Book a demo →"
+    ctaHref={SITE.bookingUrl}
+  />
+</Base>
+
+<style>
+  /* Hero */
+  .hero {
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero__inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1.15fr .85fr;
+    gap: 56px;
+    padding-top: 76px;
+    padding-bottom: 72px;
+    align-items: start;
+    pointer-events: none;
+  }
+  .hero__eyebrow { display: inline-flex; align-items: center; gap: 9px; margin-bottom: 26px; }
+  .hero__mark {
+    width: 12px; height: 12px; display: block; flex: none;
+    background: var(--gradient);
+    border: 2px solid var(--ink);
+  }
+  .hero__title {
+    margin: 0 0 24px;
+    font-size: clamp(40px, 5.6vw, 66px);
+    line-height: 1.02;
+    font-weight: 800;
+    letter-spacing: -.035em;
+    text-wrap: pretty;
+    width: min(660px, 100%);
+  }
+  .hero__lead { margin: 0 0 36px; font-size: 20px; line-height: 1.5; max-width: 30em; }
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    align-items: center;
+    pointer-events: auto;
+  }
+  .hero__btn { padding: 17px 32px; font-size: 16px; }
+  .hero__btn--outline { padding: 17px 28px; }
+
+  /* Logo strip */
+  .logos {
+    display: flex;
+    align-items: center;
+    gap: 44px;
+    padding-top: 22px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .logos__label { font-size: 12.2px; flex: none; }
+  .logos__row { display: flex; gap: 40px; flex: 1; align-items: center; }
+  .logos__item {
+    flex: 1;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: .45;
+  }
+
+  /* Section title */
+  .section-title { font-size: clamp(34px, 4vw, 47px); line-height: 1.02; }
+
+  /* Becoming AI Fluent */
+  .fluent { padding-top: 120px; padding-bottom: 128px; }
+  .fluent__intro {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 72px;
+    align-items: flex-start;
+    margin-bottom: 96px;
+  }
+  .fluent__intro-copy { font-size: 18px; line-height: 1.6; margin-bottom: 44px; }
+  .fluent__rows { display: flex; flex-direction: column; gap: 120px; }
+  .fluent__row {
+    display: grid;
+    grid-template-columns: 1.2fr .8fr;
+    gap: 72px;
+    align-items: center;
+  }
+  .fluent__row--flip { grid-template-columns: .8fr 1.2fr; }
+  .fluent__row--flip .framed { order: 2; }
+  .fluent__row--flip .framed__frame { left: 0; right: 56px; }
+  .fluent__row--flip .fluent__text { padding: 0 24px 0 0; }
+  .fluent__text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 0 0 24px;
+  }
+  .fluent__title { margin: 0 0 16px; font-size: 30px; line-height: 1.1; }
+  .fluent__body { margin: 0 0 28px; font-size: 18px; line-height: 1.6; max-width: 24em; }
+
+  /* Framed image over a textured mesh block */
+  .framed { position: relative; height: 440px; overflow: hidden; }
+  .framed--tall { height: 520px; }
+  .framed__frame {
+    position: absolute;
+    left: 56px; right: 0; top: 56px; bottom: 0;
+    background: var(--white);
+  }
+  .framed__frame img { width: 100%; height: 100%; object-fit: cover; }
+
+  /* 01 / 02 / 03 chip with gradient underline on row hover */
+  .num-chip {
+    align-self: flex-start;
+    position: relative;
+    font-family: var(--font-mono);
+    font-size: 18.8px;
+    font-weight: 400;
+    margin-bottom: 22px;
+    padding-bottom: 6px;
+    transition: font-weight .2s ease;
+  }
+  .num-chip__line {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #1E76C7, #1FC8A9);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform .45s cubic-bezier(.65,0,.35,1);
+  }
+  .fluent__row:hover .num-chip { font-weight: 700; }
+  .fluent__row:hover .num-chip__line { transform: scaleX(1); }
+
+  /* Stats */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    background: var(--ink);
+    border-bottom: 1px solid var(--border);
+  }
+  .stats__item { padding: 34px 24px 32px; border-right: 1px solid var(--rule-dark); }
+  .stats__item:first-child { padding-left: 0; }
+  .stats__item:last-child { padding-right: 0; border-right: 0; }
+  .stats__value {
+    font-family: var(--font-mono);
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--white);
+  }
+  .stats__label { font-size: 14.5px; color: var(--stat-text); margin-top: 9px; }
+
+  /* Testimonials */
+  .praise { padding-top: 120px; padding-bottom: 128px; }
+  .praise__title { margin: 0 0 72px; max-width: 10em; }
+  .praise__feature {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 72px;
+    align-items: center;
+    margin-bottom: 112px;
+  }
+  .praise__kicker { color: var(--teal-deep); margin-bottom: 26px; }
+  .praise__quote {
+    margin: 0 0 36px;
+    font-size: clamp(26px, 2.9vw, 34px);
+    line-height: 1.25;
+    letter-spacing: -.02em;
+    text-wrap: pretty;
+  }
+  .praise__who { font-size: 17px; font-weight: 600; }
+  .praise__name { font-family: var(--font-mono); font-size: 13.6px; color: var(--muted); margin-top: 4px; }
+  .praise__pair { display: grid; grid-template-columns: 1fr 1fr; gap: 72px; }
+  .praise__card {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
+    padding-top: 32px;
+    border-top: 1.5px solid var(--ink);
+  }
+  .praise__card blockquote { margin: 0; font-size: 21px; line-height: 1.5; text-wrap: pretty; }
+  .praise__person { display: flex; align-items: center; gap: 14px; }
+  .praise__person img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; flex: none; }
+  .praise__person-name { font-size: 15.5px; font-weight: 600; }
+  .praise__person-role { font-family: var(--font-mono); font-size: 12.7px; color: var(--muted); }
+
+  /* ─── Responsive ─── */
+  @media (max-width: 900px) {
+    .hero__inner { grid-template-columns: minmax(0, 1fr); padding-top: 64px; padding-bottom: 64px; }
+    .hero__inner > div:empty { display: none; }
+    .hero__lead { font-size: 18px; }
+
+    .logos { flex-direction: column; align-items: flex-start; gap: 18px; }
+    .logos__row { width: 100%; gap: 24px; flex-wrap: wrap; }
+    .logos__item { flex: 1 1 40%; }
+
+    .fluent { padding-top: 88px; padding-bottom: 96px; }
+    .fluent__intro { grid-template-columns: 1fr; gap: 24px; margin-bottom: 64px; }
+    .fluent__intro-copy { margin-bottom: 0; }
+    .fluent__rows { gap: 80px; }
+    .fluent__row, .fluent__row--flip { grid-template-columns: 1fr; gap: 36px; }
+    .fluent__row--flip .framed { order: 0; }
+    .fluent__text, .fluent__row--flip .fluent__text { padding: 0; }
+
+    .stats { grid-template-columns: 1fr 1fr; }
+    .stats__item { padding: 30px 20px 28px 0; border-right: 0; }
+    .stats__item:nth-child(odd) { border-right: 1px solid var(--rule-dark); }
+    .stats__item:nth-child(even) { padding-left: 20px; padding-right: 0; }
+    .stats__item:nth-child(n+3) { border-top: 1px solid var(--rule-dark); }
+
+    .praise { padding-top: 88px; padding-bottom: 96px; }
+    .praise__title { margin-bottom: 48px; }
+    .praise__feature { grid-template-columns: 1fr; gap: 40px; margin-bottom: 72px; }
+    .praise__pair { grid-template-columns: 1fr; gap: 48px; }
+  }
+
+  @media (max-width: 560px) {
+    .framed, .framed--tall { height: 320px; }
+    .framed__frame { left: 32px; top: 32px; }
+    .fluent__row--flip .framed__frame { left: 0; right: 32px; }
+    .fluent__title { font-size: 26px; }
+    .stats__value { font-size: 32px; }
+    .praise__card blockquote { font-size: 19px; }
+  }
+</style>

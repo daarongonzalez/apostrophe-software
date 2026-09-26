@@ -1,0 +1,63 @@
+---
+// Closing call-to-action band shared by every page.
+interface Props {
+  headline: string;
+  body: string;
+  ctaLabel?: string;
+  ctaHref?: string;
+}
+const { headline, body, ctaLabel, ctaHref } = Astro.props;
+---
+<section class="cta-band pad-x">
+  <div class="eyebrow cta-band__eyebrow">Apostrophe Software</div>
+  <h2 class="cta-band__headline">{headline}</h2>
+  <p class="cta-band__body">{body}</p>
+  <div class="cta-band__actions">
+    <slot>
+      <a href={ctaHref} class="btn cta-band__btn">{ctaLabel}</a>
+    </slot>
+  </div>
+</section>
+
+<style>
+  .cta-band {
+    padding-top: 104px;
+    padding-bottom: 112px;
+    text-align: center;
+    border-top: 1px solid var(--border);
+    background:
+      var(--noise),
+      radial-gradient(55% 75% at 12% 18%, #B9DDFB 0%, rgba(185,221,251,0) 70%),
+      radial-gradient(50% 70% at 88% 26%, #B2F0E2 0%, rgba(178,240,226,0) 70%),
+      radial-gradient(70% 80% at 55% 105%, #9ED8F2 0%, rgba(158,216,242,0) 70%),
+      #EEF7FA;
+  }
+  .cta-band__eyebrow { margin-bottom: 26px; }
+  .cta-band__headline {
+    margin: 0 auto;
+    max-width: 9.5em;
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(58px, 10vw, 118px);
+    line-height: .92;
+    letter-spacing: -.005em;
+    text-transform: uppercase;
+    color: var(--ink);
+    text-wrap: balance;
+  }
+  .cta-band__body {
+    margin: 30px auto 38px;
+    max-width: 34em;
+    font-size: 19px;
+    line-height: 1.5;
+    color: var(--ink);
+    text-wrap: pretty;
+  }
+  .cta-band__actions { display: flex; justify-content: center; }
+  .cta-band__btn { padding: 18px 34px; font-size: 17px; }
+
+  @media (max-width: 700px) {
+    .cta-band { padding-top: 80px; padding-bottom: 88px; }
+    .cta-band__body { font-size: 17px; }
+  }
+</style>

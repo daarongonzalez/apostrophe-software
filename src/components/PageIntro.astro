@@ -1,0 +1,25 @@
+---
+// Page header band: marked eyebrow, H1, lead. Extra content goes in the "aside" slot.
+interface Props {
+  eyebrow: string;
+  title: string;
+  tint?: boolean;
+  class?: string;
+}
+const { eyebrow, title, tint = false, class: className } = Astro.props;
+---
+<section class:list={['intro pad-x', { 'intro--tint': tint }, className]}>
+  <div class="intro__main">
+    <div class="eyebrow eyebrow--marked intro__eyebrow"><span class="eyebrow__mark"></span>{eyebrow}</div>
+    <h1 class="heading intro__title">{title}</h1>
+    <slot />
+  </div>
+  <slot name="aside" />
+</section>
+
+<style>
+  .intro { border-bottom: 1px solid var(--border); }
+  .intro--tint { background: var(--surface); }
+  .intro__eyebrow { margin-bottom: 24px; }
+  .intro__title { line-height: 1.03; }
+</style>

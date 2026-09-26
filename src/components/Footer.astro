@@ -1,0 +1,97 @@
+---
+import { SITE } from '../site';
+const year = 2026;
+---
+<footer class="site-footer pad-x">
+  <div class="site-footer__cols">
+    <div class="site-footer__tagline">Fluency leads<br />to revenue.</div>
+    <div class="site-footer__col">
+      <span class="site-footer__label">Explore</span>
+      <a href="/#services">Services</a>
+      <a href="/events">Events</a>
+    </div>
+    <div class="site-footer__col">
+      <span class="site-footer__label">Company</span>
+      <a href="/about">About</a>
+      <a href="/blog">Blog</a>
+      <a href={SITE.contactUrl}>Contact</a>
+    </div>
+    <div class="site-footer__col">
+      <span class="site-footer__label">Talk to us</span>
+      <a href={SITE.bookingUrl}>Book a demo</a>
+      <span>{SITE.domain}</span>
+    </div>
+  </div>
+  <div class="site-footer__word-wrap" aria-hidden="true">
+    <div class="site-footer__word">Apostrophe</div>
+  </div>
+  <div class="site-footer__bar">
+    <span>© {year} {SITE.name}</span>
+    <span>{SITE.domain}</span>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--ink);
+    color: var(--white);
+    padding-top: 68px;
+    overflow: hidden;
+  }
+  .site-footer__cols {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr 1fr;
+    gap: 40px;
+  }
+  .site-footer__tagline {
+    font-size: 36px;
+    line-height: 1.15;
+    font-weight: 400;
+    letter-spacing: -.02em;
+    max-width: 9em;
+  }
+  .site-footer__col {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    font-size: 16px;
+  }
+  .site-footer__col a:hover { color: var(--teal-bright); }
+  .site-footer__label { color: var(--footer-muted); }
+
+  .site-footer__word-wrap { container-type: inline-size; }
+  .site-footer__word {
+    font-family: var(--font-display);
+    /* 230px at the 1068px design width; scales down with the container */
+    font-size: min(230px, 21.4cqi);
+    line-height: .8;
+    letter-spacing: -.005em;
+    text-transform: uppercase;
+    color: var(--teal-bright);
+    margin: 84px 0 0 -6px;
+    white-space: nowrap;
+  }
+  .site-footer__bar {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 24px 0 26px;
+    margin-top: 34px;
+    border-top: 1px solid var(--rule-dark);
+    font-family: var(--font-mono);
+    font-size: 12.7px;
+    color: var(--footer-meta);
+  }
+
+  @media (max-width: 900px) {
+    .site-footer__cols { grid-template-columns: 1fr 1fr 1fr; }
+    .site-footer__tagline { grid-column: 1 / -1; }
+  }
+  @media (max-width: 560px) {
+    .site-footer { padding-top: 56px; }
+    .site-footer__cols { grid-template-columns: 1fr 1fr; gap: 32px 24px; }
+    .site-footer__tagline { font-size: 30px; }
+    .site-footer__word { margin-top: 56px; margin-left: -3px; }
+    .site-footer__bar { flex-direction: column; gap: 6px; }
+  }
+</style>
