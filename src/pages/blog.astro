@@ -1,0 +1,144 @@
+---
+import Base from '../layouts/Base.astro';
+import PageIntro from '../components/PageIntro.astro';
+import ComingSoon from '../components/ComingSoon.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { FEATURES, SITE } from '../site';
+
+const filters = ['All', 'Engineering', 'Enablement', 'Cost'];
+
+const posts = [
+  { tag: 'Enablement · 6 min', teal: true, title: 'Teach the eval, not the prompt', body: "Prompting is a skill that expires. Knowing whether the output is right doesn't.", date: 'Sep 05, 2026', mesh: ['10% 90%', '90% 10%'] },
+  { tag: 'Engineering · 8 min', teal: false, title: 'The agent that should have been a cron job', body: 'A postmortem on the thing we talked a client out of building, and what we shipped instead.', date: 'Aug 28, 2026', mesh: ['90% 90%', '10% 10%'] },
+  { tag: 'Enablement · 5 min', teal: true, title: 'Process mining with a notebook and a pen', body: "Before any tooling: two days of watching people work. It's still the highest-ROI thing we do.", date: 'Aug 19, 2026', mesh: ['50% 110%', '85% 0%'] },
+];
+---
+<Base
+  title="Blog — Apostrophe Software"
+  description="Field notes written from inside the engagements: what broke and what we did about it."
+  active="blog"
+>
+  <PageIntro eyebrow="Field notes" title="What we learned this week." class="blog-intro">
+    <p class="lead blog-intro__lead">Written from inside the engagements. No thought leadership, no predictions — just what broke and what we did about it.</p>
+    <div slot="aside" class="filters" aria-label="Topics">
+      {filters.map((f, i) => (
+        <span class:list={['filters__item', { 'is-active': i === 0 }]}>{f}</span>
+      ))}
+    </div>
+  </PageIntro>
+
+  {FEATURES.blogPosts ? (
+    <section class="posts pad-x">
+      <article class="featured">
+        <div class="featured__img mesh" style="--m1:20% 90%;--m2:85% 15%"></div>
+        <div class="featured__text">
+          <div class="featured__tag">Featured · Cost · 9 min read</div>
+          <h2 class="heading featured__title">We cut a client's model bill 41% without touching a single feature</h2>
+          <p class="featured__body">Four changes: route the cheap calls cheap, cache the boring ones, stop re-sending the whole document, and measure before you argue. The traces told us everything — here's how we read them.</p>
+          <div class="featured__byline">Author name · Sep 12, 2026</div>
+        </div>
+      </article>
+      <div class="posts__grid">
+        {posts.map((p) => (
+          <article class="post">
+            <div class="post__img mesh" style={`--m1:${p.mesh[0]};--m2:${p.mesh[1]}`}></div>
+            <div class:list={['post__tag', { 'is-teal': p.teal }]}>{p.tag}</div>
+            <h3 class="heading post__title">{p.title}</h3>
+            <p class="post__body">{p.body}</p>
+            <div class="post__date">{p.date}</div>
+          </article>
+        ))}
+      </div>
+    </section>
+  ) : (
+    <ComingSoon label="Blog" />
+  )}
+
+  <CtaBand
+    headline="One note a week. Nothing else."
+    body="What we hit, what we fixed, what we'd do differently."
+  >
+    <form class="subscribe" action={SITE.newsletterUrl} method="post" enctype="text/plain">
+      <label class="sr-only" for="subscribe-email">Email address</label>
+      <input id="subscribe-email" name="email" type="email" placeholder="you@company.com" required />
+      <button type="submit" class="btn subscribe__btn">Subscribe</button>
+    </form>
+  </CtaBand>
+</Base>
+
+<style>
+  .blog-intro {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 40px;
+    padding-top: 66px;
+    padding-bottom: 44px;
+  }
+  .blog-intro :global(.intro__eyebrow) { margin-bottom: 22px; }
+  .blog-intro :global(.intro__title) { margin: 0 0 16px; font-size: clamp(34px, 4vw, 47px); }
+  .blog-intro__lead { font-size: 19px; line-height: 1.5; max-width: 32em; }
+
+  .filters { display: flex; gap: 10px; flex: none; font-family: var(--font-mono); font-size: 12.7px; font-weight: 700; }
+  .filters__item { padding: 9px 16px; border: 1px solid var(--border); }
+  .filters__item.is-active { background: var(--ink); color: var(--white); border-color: var(--ink); }
+
+  .subscribe { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  .subscribe input {
+    padding: 16px 20px;
+    border: 1.5px solid var(--ink);
+    border-radius: 0;
+    font-family: var(--font-mono);
+    font-size: 14.1px;
+    width: 260px;
+    max-width: 100%;
+    background: var(--white);
+    color: var(--ink);
+  }
+  .subscribe__btn { padding: 16px 30px; font-size: 16px; }
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+  }
+
+  /* Post list (hidden at launch) */
+  .posts { padding-top: 56px; padding-bottom: 20px; }
+  .featured {
+    display: grid;
+    grid-template-columns: .9fr 1.1fr;
+    margin: 0 0 48px;
+    border: 1.5px solid var(--border);
+    transition: border-color .25s ease;
+  }
+  .featured:hover { border-color: var(--ink); }
+  .featured__img { min-height: 320px; border-right: 1px solid var(--border); }
+  .featured__text { padding: 40px 42px; display: flex; flex-direction: column; }
+  .featured__tag { font-family: var(--font-mono); font-size: 12.2px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--blue); margin-bottom: 16px; }
+  .featured__title { margin: 0 0 14px; font-size: 29px; line-height: 1.1; text-wrap: pretty; }
+  .featured__body { font-size: 17px; line-height: 1.55; color: var(--slate); }
+  .featured__byline { margin-top: auto; padding-top: 28px; font-family: var(--font-mono); font-size: 13.2px; color: var(--slate); }
+
+  .posts__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
+  .post {
+    padding: 26px 26px 28px;
+    display: flex;
+    flex-direction: column;
+    border: 1.5px solid var(--border);
+    transition: border-color .25s ease;
+  }
+  .post:hover { border-color: var(--ink); }
+  .post__img { height: 120px; border: 1px solid var(--border); margin-bottom: 20px; }
+  .post__tag { font-family: var(--font-mono); font-size: 11.8px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--blue); margin-bottom: 10px; }
+  .post__tag.is-teal { color: var(--teal-deep); }
+  .post__title { margin: 0 0 10px; font-size: 18px; line-height: 1.2; }
+  .post__body { font-size: 15.5px; line-height: 1.55; color: var(--slate); }
+  .post__date { margin-top: auto; padding-top: 20px; font-family: var(--font-mono); font-size: 12.2px; color: var(--muted); }
+
+  @media (max-width: 900px) {
+    .blog-intro { flex-direction: column; align-items: flex-start; padding-top: 56px; }
+    .filters { flex-wrap: wrap; }
+    .featured { grid-template-columns: 1fr; }
+    .featured__img { min-height: 220px; border-right: 0; border-bottom: 1px solid var(--border); }
+    .posts__grid { grid-template-columns: 1fr; }
+  }
+</style>

@@ -1,0 +1,132 @@
+---
+import Logo from './Logo.astro';
+import { NAV, SITE } from '../site';
+
+interface Props {
+  active?: string;
+}
+const { active } = Astro.props;
+---
+<header class="site-header pad-x">
+  <a href="/" class="brand" aria-label="Apostrophe Software home">
+    <Logo />
+    <span class="brand__word">Apostrophe</span>
+  </a>
+
+  <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+    <span class="menu-toggle__bars" aria-hidden="true"></span>
+    <span class="sr-only">Menu</span>
+  </button>
+
+  <nav id="site-nav" class="site-nav" aria-label="Main">
+    {NAV.map((item) => (
+      <a
+        href={item.href}
+        class:list={['site-nav__link', { 'is-active': item.key === active }]}
+        aria-current={item.key === active ? 'page' : undefined}
+      >
+        {item.label}
+      </a>
+    ))}
+    <a href={SITE.bookingUrl} class="btn site-nav__cta">Book a demo</a>
+  </nav>
+</header>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('.menu-toggle');
+  const header = document.querySelector('.site-header');
+  toggle?.addEventListener('click', () => {
+    const open = header?.classList.toggle('is-open') ?? false;
+    toggle.setAttribute('aria-expanded', String(open));
+  });
+</script>
+
+<style>
+  .site-header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--white);
+    z-index: 30;
+  }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand__word { font-size: 19px; font-weight: 700; letter-spacing: -.02em; }
+
+  .site-nav {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    font-size: 15px;
+    font-weight: 500;
+  }
+  .site-nav__link.is-active {
+    font-weight: 700;
+    box-shadow: inset 0 -9px 0 rgba(31, 200, 169, .35);
+  }
+  .site-nav__link:hover { box-shadow: inset 0 -9px 0 rgba(31, 200, 169, .35); }
+  .site-nav__cta {
+    display: block;
+    margin-left: 4px;
+    padding: 11px 22px;
+  }
+
+  .menu-toggle {
+    display: none;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 1.5px solid var(--ink);
+    background: var(--white);
+    cursor: pointer;
+    position: relative;
+  }
+  .menu-toggle__bars,
+  .menu-toggle__bars::before,
+  .menu-toggle__bars::after {
+    position: absolute;
+    left: 11px;
+    width: 19px;
+    height: 2px;
+    background: var(--ink);
+    content: '';
+    transition: transform .25s ease, opacity .2s ease;
+  }
+  .menu-toggle__bars { top: 20px; }
+  .menu-toggle__bars::before { left: 0; top: -6px; }
+  .menu-toggle__bars::after { left: 0; top: 6px; }
+  .is-open .menu-toggle__bars { background: transparent; }
+  .is-open .menu-toggle__bars::before { transform: translateY(6px) rotate(45deg); }
+  .is-open .menu-toggle__bars::after { transform: translateY(-6px) rotate(-45deg); }
+
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+  }
+
+  @media (max-width: 820px) {
+    .menu-toggle { display: block; }
+    .site-nav {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      padding: 8px var(--gutter) 24px;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      font-size: 17px;
+    }
+    .is-open .site-nav { display: flex; }
+    .site-nav__link { padding: 14px 0; border-bottom: 1px solid var(--border); }
+    .site-nav__link.is-active, .site-nav__link:hover { box-shadow: none; }
+    .site-nav__link.is-active { color: var(--teal-deep); }
+    .site-nav__cta { margin: 20px 0 0; text-align: center; padding: 15px 22px; }
+  }
+</style>

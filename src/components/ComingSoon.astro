@@ -1,0 +1,10 @@
+---
+interface Props {
+  label: string;
+}
+const { label } = Astro.props;
+---
+<section class="coming-soon pad-x">
+  <div class="eyebrow">{label}</div>
+  <h2 class="heading">Coming Soon</h2>
+</section>

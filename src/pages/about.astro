@@ -1,0 +1,147 @@
+---
+import Base from '../layouts/Base.astro';
+import PageIntro from '../components/PageIntro.astro';
+import ComingSoon from '../components/ComingSoon.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Principles from '../components/Principles.astro';
+import { FEATURES, SITE } from '../site';
+
+const numbers = [
+  { label: 'Founded', value: '2023' },
+  { label: 'Engineers & educators', value: '9' },
+  { label: 'Orgs embedded with', value: '14' },
+  { label: 'Clients on retainer', value: '0', teal: true },
+];
+
+const team = [
+  { name: 'Founder name', role: 'Founder / Principal engineer', color: '#1E76C7' },
+  { name: 'Team member', role: 'Forward deployed engineer', color: '#1FC8A9' },
+  { name: 'Team member', role: 'Curriculum lead', color: '#1E76C7' },
+  { name: 'Team member', role: 'Process mining', color: '#1FC8A9' },
+];
+---
+<Base
+  title="About — Apostrophe Software"
+  description="Apostrophe Software was born out of the frustration of falling behind. We believe technical skills unlock opportunity."
+  active="about"
+>
+  <PageIntro eyebrow="Why we do what we do" title="Technical Skills Unlocks Opportunity" class="about-intro">
+    <p class="lead about-intro__p">Apostrophe software was born out of the frustration of falling behind. We believe becoming technically capable opens career opportunities, that includes becoming an AI leader.</p>
+    <p class="lead about-intro__p">We started Apostrophe to close that gap in person: sit with the team, learn their words, build in their stack, and leave when they don't need us. Fluency is the deliverable, capability is the goal.</p>
+    <div slot="aside" class="numbers">
+      <div class="numbers__label">By the numbers</div>
+      <dl class="numbers__list">
+        {numbers.map((n) => (
+          <div class="numbers__row">
+            <dt>{n.label}</dt>
+            <dd class:list={{ 'is-teal': n.teal }}>{n.value}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </PageIntro>
+
+  <section class="hold pad-x">
+    <h2 class="heading hold__title">How we hold ourselves</h2>
+    <p class="hold__sub">Four rules we've never broken, including the expensive times.</p>
+    <Principles />
+  </section>
+
+  {FEATURES.teamGrid ? (
+    <section class="team pad-x">
+      <div class="team__head">
+        <h2 class="heading team__title">The people who show up</h2>
+      </div>
+      <div class="team__grid">
+        {team.map((m) => (
+          <div>
+            <div class="team__photo" style={`--stripe:${m.color}`}></div>
+            <div class="team__name">{m.name}</div>
+            <div class="team__role">{m.role}</div>
+          </div>
+        ))}
+      </div>
+    </section>
+  ) : (
+    <ComingSoon label="Team" />
+  )}
+
+  <CtaBand
+    headline="Meet the team before you hire the team."
+    body="Thirty minutes with the engineer who'd be in your building working on your problems."
+    ctaLabel="Book a demo →"
+    ctaHref={SITE.bookingUrl}
+  />
+</Base>
+
+<style>
+  .about-intro {
+    display: grid;
+    grid-template-columns: 1.1fr .9fr;
+    gap: 52px;
+    padding-top: 72px;
+    padding-bottom: 64px;
+    align-items: start;
+  }
+  .about-intro :global(.intro__title) {
+    margin: 0 0 22px;
+    font-size: clamp(34px, 4vw, 47px);
+    line-height: 1.04;
+    text-wrap: pretty;
+  }
+  .about-intro__p { font-size: 19px; line-height: 1.55; }
+  .about-intro__p + .about-intro__p { margin-top: 18px; }
+
+  .numbers {
+    padding: 30px 32px;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    transition: border-color .25s ease;
+  }
+  .numbers:hover { border-color: var(--ink); }
+  .numbers__label {
+    font-family: var(--font-mono);
+    font-size: 12.2px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 18px;
+  }
+  .numbers__list { margin: 0; display: flex; flex-direction: column; }
+  .numbers__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 14px 0;
+    border-bottom: 1.5px solid #D5DBE1;
+  }
+  .numbers__row:last-child { border-bottom: 0; }
+  .numbers__row dt { font-size: 16px; font-weight: 500; }
+  .numbers__row dd { margin: 0; font-family: var(--font-mono); font-size: 24px; font-weight: 700; color: var(--blue); }
+  .numbers__row dd.is-teal { color: var(--teal-deep); }
+
+  .hold { padding-top: 68px; padding-bottom: 20px; }
+  .hold__title { margin: 0 0 8px; font-size: clamp(28px, 3vw, 32px); }
+  .hold__sub { margin: 0 0 40px; font-size: 18px; color: var(--slate); }
+
+  /* Team (hidden at launch) */
+  .team { padding-top: 64px; padding-bottom: 24px; }
+  .team__head { margin-bottom: 30px; }
+  .team__title { font-size: 32px; }
+  .team__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+  .team__photo {
+    aspect-ratio: 1 / 1;
+    border: 1.5px solid var(--ink);
+    background: repeating-linear-gradient(135deg, var(--stripe) 0 2px, transparent 2px 8px), var(--surface);
+    margin-bottom: 14px;
+  }
+  .team__name { font-size: 17px; font-weight: 700; letter-spacing: -.01em; }
+  .team__role { font-family: var(--font-mono); font-size: 12.7px; color: var(--muted); margin-top: 3px; }
+
+  @media (max-width: 900px) {
+    .about-intro { grid-template-columns: 1fr; gap: 40px; padding-top: 56px; padding-bottom: 56px; }
+    .about-intro__p { font-size: 18px; }
+    .team__grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>

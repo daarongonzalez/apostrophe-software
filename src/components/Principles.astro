@@ -1,0 +1,133 @@
+---
+// Dark story panel that cycles four principles every 4.5s.
+// Clicking a dot jumps to that principle and restarts the timer.
+const principles = [
+  ['We build in your repo, not a sandbox', "If it can't survive your auth, your data, and your review process, it isn't a solution — it's a demo."],
+  ["We'll talk you out of it", 'Most AI projects should be a spreadsheet, a rule, or a conversation. We say that in week one, not month six.'],
+  ['Handoff, not dependency', 'Every engagement ends with your names on the commits and your docs in your wiki. No retainer to keep the lights on.'],
+  ['Plain language, always', "If we can't explain the system to the person who has to run it, we haven't finished designing it."],
+];
+---
+<div class="story" data-principles={JSON.stringify(principles)}>
+  <div class="story__art">
+    <div class="story__img" aria-hidden="true"></div>
+  </div>
+  <div class="story__text" aria-live="polite">
+    <div class="story__num">Principle <span data-num>01</span></div>
+    <h3 class="heading story__title" data-title>{principles[0][0]}</h3>
+    <p class="story__body" data-body>{principles[0][1]}</p>
+  </div>
+  <div class="story__dots">
+    {principles.map((_, i) => (
+      <button
+        type="button"
+        class:list={['story__dot', { 'is-active': i === 0 }]}
+        aria-label={`Principle ${i + 1}`}
+        aria-pressed={i === 0 ? 'true' : 'false'}
+        data-go={i}
+      />
+    ))}
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.story').forEach((root) => {
+    const items: [string, string][] = JSON.parse(root.dataset.principles || '[]');
+    const num = root.querySelector('[data-num]')!;
+    const title = root.querySelector('[data-title]')!;
+    const body = root.querySelector('[data-body]')!;
+    const dots = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-go]'));
+    let current = 0;
+    let timer: number | undefined;
+
+    function show(i: number) {
+      current = i;
+      num.textContent = String(i + 1).padStart(2, '0');
+      title.textContent = items[i][0];
+      body.textContent = items[i][1];
+      dots.forEach((d, j) => {
+        d.classList.toggle('is-active', j === i);
+        d.setAttribute('aria-pressed', j === i ? 'true' : 'false');
+      });
+    }
+    function start() {
+      window.clearInterval(timer);
+      timer = window.setInterval(() => show((current + 1) % items.length), 4500);
+    }
+    dots.forEach((d) => d.addEventListener('click', () => { show(Number(d.dataset.go)); start(); }));
+    start();
+  });
+</script>
+
+<style>
+  .story {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 480px;
+    color: var(--white);
+    background:
+      var(--noise),
+      radial-gradient(60% 70% at 0% 100%, rgba(31,200,169,.55) 0%, rgba(31,200,169,0) 70%),
+      radial-gradient(45% 55% at 18% 110%, rgba(30,118,199,.6) 0%, rgba(30,118,199,0) 70%),
+      #16171A;
+  }
+  .story__art { display: flex; align-items: center; justify-content: center; padding: 56px; }
+  .story__img {
+    width: 100%;
+    max-width: 360px;
+    aspect-ratio: 4 / 5;
+    border: 1.5px solid #3B3D40;
+    background: repeating-linear-gradient(135deg, rgba(47,224,190,.28) 0 2px, rgba(0,0,0,0) 2px 9px);
+  }
+  .story__text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 56px 96px 56px 16px;
+  }
+  .story__num {
+    font-family: var(--font-mono);
+    font-size: 13.2px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--teal-bright);
+    margin-bottom: 18px;
+  }
+  .story__title { margin: 0 0 16px; font-size: 29px; line-height: 1.12; text-wrap: balance; }
+  .story__body { font-size: 18px; line-height: 1.55; color: var(--stat-text); max-width: 26em; text-wrap: pretty; }
+  .story__dots {
+    position: absolute;
+    right: 36px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .story__dot {
+    display: block;
+    width: 4px;
+    height: 10px;
+    background: var(--dot-idle);
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    transition: height .35s ease, background .35s ease;
+  }
+  /* Wider hit area without changing the drawn size */
+  .story__dot { position: relative; }
+  .story__dot::after { content: ''; position: absolute; inset: -4px -10px; }
+  .story__dot.is-active { height: 44px; background: linear-gradient(180deg, #1E76C7, #1FC8A9); }
+
+  @media (max-width: 900px) {
+    .story { grid-template-columns: 1fr; min-height: 0; }
+    .story__art { padding: 40px 28px 0; justify-content: flex-start; }
+    .story__img { max-width: 220px; }
+    .story__text { padding: 32px 64px 44px 28px; min-height: 260px; justify-content: flex-start; }
+    .story__dots { right: 24px; top: auto; bottom: 44px; transform: none; }
+    .story__title { font-size: 25px; }
+    .story__body { font-size: 17px; }
+  }
+</style>

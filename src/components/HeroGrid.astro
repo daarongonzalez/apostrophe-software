@@ -1,0 +1,139 @@
+---
+// Interactive isometric tile grid behind the home hero.
+// Hovering a cell lifts it into a cube: the white top face slides up-right,
+// exposing a left and a bottom wall drawn as skewed gradient strips.
+interface Props {
+  cell?: number; // cell size in px
+  lift?: number; // max lift in px
+}
+const { cell = 56, lift = 30 } = Astro.props;
+---
+<div class="hero-grid" data-cell={cell} data-lift={lift} aria-hidden="true"></div>
+
+<script>
+  const RISE = { ease: 'cubic-bezier(.34,1.56,.64,1)', dur: 0.38, wallFade: 0.2, topFade: 0.18 };
+  const FALL = { ease: 'cubic-bezier(.4,0,.2,1)', dur: 0.62, wallFade: 0.4, topFade: 0.4 };
+
+  function setup(root: HTMLElement) {
+    const size = Number(root.dataset.cell) || 56;
+    const off = +((Number(root.dataset.lift) || 30) * 0.55).toFixed(2);
+    let cols = 0;
+    let rows = 0;
+    let active: HTMLElement | null = null;
+
+    root.style.gridAutoRows = `${size}px`;
+
+    function setCell(cell: HTMLElement, up: boolean) {
+      const t = up ? RISE : FALL;
+      const [left, bottom, top] = Array.from(cell.children) as HTMLElement[];
+      const tr = (prop: string, dur: number) => `${prop} ${dur}s ${t.ease}`;
+      cell.style.zIndex = up ? '20' : '1';
+
+      left.style.transition = [tr('width', t.dur), tr('opacity', t.wallFade)].join(',');
+      left.style.width = up ? `${off}px` : '0px';
+      left.style.opacity = up ? '1' : '0';
+
+      bottom.style.transition = [tr('height', t.dur), tr('opacity', t.wallFade)].join(',');
+      bottom.style.height = up ? `${off}px` : '0px';
+      bottom.style.opacity = up ? '1' : '0';
+
+      top.style.transition = [tr('transform', t.dur), tr('box-shadow', t.dur), tr('opacity', t.topFade)].join(',');
+      top.style.transform = up ? `translate(${off}px,${-off}px)` : 'translate(0,0)';
+      top.style.opacity = up ? '1' : '0';
+      const s = (off * 0.4).toFixed(1);
+      top.style.boxShadow = up ? `${s}px ${s}px ${(off * 1.3).toFixed(1)}px rgba(19,75,128,.16)` : 'none';
+    }
+
+    function build() {
+      const r = root.getBoundingClientRect();
+      const c = Math.ceil(r.width / size);
+      const rw = Math.ceil(r.height / size);
+      if (c === cols && rw === rows) return;
+      cols = c;
+      rows = rw;
+      active = null;
+      root.style.gridTemplateColumns = `repeat(${cols},${size}px)`;
+
+      const frag = document.createDocumentFragment();
+      for (let i = 0; i < cols * rows; i++) {
+        const col = i % cols;
+        const cell = document.createElement('div');
+        cell.className = 'hero-grid__cell';
+        cell.style.animationDelay = `${((cols - 1 - col) * 0.022 + 0.15).toFixed(3)}s`;
+        cell.innerHTML =
+          '<div class="hero-grid__wall-l"></div><div class="hero-grid__wall-b"></div><div class="hero-grid__top"></div>';
+        frag.appendChild(cell);
+      }
+      root.replaceChildren(frag);
+    }
+
+    root.addEventListener('mouseover', (e) => {
+      const cell = (e.target as HTMLElement).closest<HTMLElement>('.hero-grid__cell');
+      if (!cell || cell === active) return;
+      if (active) setCell(active, false);
+      setCell(cell, true);
+      active = cell;
+    });
+    root.addEventListener('mouseleave', () => {
+      if (active) setCell(active, false);
+      active = null;
+    });
+
+    build();
+    if ('ResizeObserver' in window) new ResizeObserver(build).observe(root);
+  }
+
+  document.querySelectorAll<HTMLElement>('.hero-grid').forEach(setup);
+</script>
+
+<style is:global>
+  @keyframes heroGridIn {
+    from { opacity: 0; transform: translateX(18px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,.85) 60%, #000 100%);
+    mask-image: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,.85) 60%, #000 100%);
+  }
+  .hero-grid__cell {
+    position: relative;
+    z-index: 1;
+    border-right: 1.5px solid rgba(28,29,31,.2);
+    border-bottom: 1.5px solid rgba(28,29,31,.2);
+    opacity: 0;
+    animation: heroGridIn .55s cubic-bezier(.2,.8,.3,1) forwards;
+  }
+  .hero-grid__wall-l {
+    position: absolute;
+    left: 0; top: 0;
+    height: 100%;
+    width: 0;
+    opacity: 0;
+    transform-origin: left top;
+    transform: skewY(-45deg);
+    background: linear-gradient(170deg, #1B67AD, #1B8FA6);
+  }
+  .hero-grid__wall-b {
+    position: absolute;
+    left: 0; bottom: 0;
+    width: 100%;
+    height: 0;
+    opacity: 0;
+    transform-origin: left bottom;
+    transform: skewX(-45deg);
+    background: linear-gradient(100deg, #17869B, #19A78E);
+  }
+  .hero-grid__top {
+    position: absolute;
+    inset: 0;
+    background: #fff;
+    border: 2px solid rgba(28,29,31,.6);
+    opacity: 0;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-grid__cell { animation: none; opacity: 1; }
+  }
+</style>
