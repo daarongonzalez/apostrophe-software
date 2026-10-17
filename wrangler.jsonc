@@ -3,5 +3,7 @@
 	"compatibility_date": "2026-09-26",
 	"assets": {
 		"directory": "./dist"
-	}
+	},
+	// Lets branch builds deploy a preview with `wrangler preview`.
+	"previews": {}
 }
