@@ -1,0 +1,207 @@
+---
+// A three.js scene inside one of the "Becoming AI Fluent" glass rings.
+// Scroll moves it through its steps; the labels under the ring follow along.
+// The scenes themselves live in src/scenes. The static icon stays in place
+// for reduced motion, when WebGL is missing, or until three.js has loaded.
+interface Props {
+  scene: 'sprints' | 'deployed' | 'book';
+  icon: string;
+  alt: string;
+  steps: string[];
+}
+const { scene, icon, alt, steps } = Astro.props;
+---
+<div class="service-scene" data-scene={scene} role="img" aria-label={alt}>
+  <div class="service-scene__stage" aria-hidden="true">
+    <img class="service-scene__fallback" src={icon} alt="" loading="lazy" />
+  </div>
+  <ol class="service-scene__steps" aria-hidden="true">
+    {steps.map((s) => <li>{s}</li>)}
+  </ol>
+</div>
+
+<script>
+  import type { SceneOptions, ServiceScene } from '../scenes/types';
+
+  const loaders: Record<string, () => Promise<{ createScene(opts: SceneOptions): ServiceScene }>> = {
+    sprints: () => import('../scenes/sprints'),
+    deployed: () => import('../scenes/deployed'),
+    book: () => import('../scenes/book'),
+  };
+
+  const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
+
+  async function start(root: HTMLElement) {
+    const load = loaders[root.dataset.scene || ''];
+    if (!load) return;
+    const stage = root.querySelector<HTMLElement>('.service-scene__stage')!;
+    const steps = Array.from(root.querySelectorAll<HTMLElement>('.service-scene__steps li'));
+    // The whole image area drives scroll progress, not just the circle.
+    const track = (root.closest('.glass') as HTMLElement) || root;
+
+    const [{ WebGLRenderer }, { createScene }] = await Promise.all([import('three'), load()]);
+
+    let renderer: InstanceType<typeof WebGLRenderer>;
+    try {
+      renderer = new WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'low-power' });
+    } catch {
+      return; // No WebGL: keep the static icon.
+    }
+    renderer.setClearColor(0x000000, 0);
+    renderer.domElement.className = 'service-scene__canvas';
+
+    const view = createScene({ small: window.matchMedia('(max-width: 600px)').matches });
+
+    // ─── Sizing ───
+    function resize() {
+      const w = stage.clientWidth;
+      const h = stage.clientHeight;
+      if (!w || !h) return;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      renderer.setPixelRatio(dpr);
+      renderer.setSize(w, h, false);
+      view.resize(w, h, dpr);
+    }
+    new ResizeObserver(resize).observe(stage);
+    resize();
+
+    // ─── Pointer ───
+    stage.addEventListener('pointermove', (e) => {
+      const r = stage.getBoundingClientRect();
+      const x = ((e.clientX - r.left) / r.width) * 2 - 1;
+      const y = -(((e.clientY - r.top) / r.height) * 2 - 1);
+      view.pointer?.(x, y, true);
+    });
+    stage.addEventListener('pointerleave', () => view.pointer?.(0, 0, false));
+
+    // ─── Scroll progress ───
+    function scrollTarget() {
+      const r = track.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const center = r.top + r.height / 2;
+      // 0 as the image area enters from below, 1 once its centre reaches ~45% of the viewport.
+      return clamp01((vh - center) / (vh * 0.55));
+    }
+
+    // ─── Loop (paused when off screen) ───
+    let progress = scrollTarget();
+    let visible = false;
+    let raf = 0;
+    let last = performance.now();
+    let activeStep = -1;
+
+    function frame(now: number) {
+      const dt = Math.min(0.05, (now - last) / 1000);
+      last = now;
+      progress += (scrollTarget() - progress) * Math.min(1, dt * 5);
+
+      const step = view.update(progress, dt, now / 1000);
+      if (step !== activeStep) {
+        activeStep = step;
+        steps.forEach((el, i) => el.classList.toggle('is-active', i === step));
+      }
+
+      renderer.render(view.scene, view.camera);
+      raf = visible ? requestAnimationFrame(frame) : 0;
+    }
+
+    new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      if (visible && !raf) {
+        last = performance.now();
+        raf = requestAnimationFrame(frame);
+      }
+    }).observe(stage);
+
+    stage.appendChild(renderer.domElement);
+    root.dataset.live = '';
+  }
+
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduce) {
+    document.querySelectorAll<HTMLElement>('.service-scene').forEach((root) => {
+      // Load three.js only when the visitor gets close to the section.
+      const io = new IntersectionObserver(
+        ([entry]) => {
+          if (!entry.isIntersecting) return;
+          io.disconnect();
+          start(root).catch(() => { /* keep the static icon */ });
+        },
+        { rootMargin: '400px 0px' },
+      );
+      io.observe(root);
+    });
+  }
+</script>
+
+<style>
+  .service-scene {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+  .service-scene__stage {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .service-scene__fallback { height: 210px; width: auto; }
+  .service-scene__stage :global(.service-scene__canvas) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    cursor: crosshair;
+  }
+  .service-scene[data-live] .service-scene__fallback { visibility: hidden; }
+
+  /* Step labels sit under the ring once the scene is running */
+  .service-scene__steps {
+    position: absolute;
+    left: 50%;
+    top: calc(100% + 30px);
+    transform: translateX(-50%);
+    display: flex;
+    gap: 22px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity .4s ease;
+  }
+  .service-scene[data-live] .service-scene__steps { opacity: 1; }
+  .service-scene__steps li {
+    position: relative;
+    padding-bottom: 5px;
+    transition: color .3s ease;
+  }
+  .service-scene__steps li::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #1E76C7, #1FC8A9);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform .45s cubic-bezier(.65,0,.35,1);
+  }
+  .service-scene__steps li.is-active { color: var(--ink); }
+  .service-scene__steps li.is-active::after { transform: scaleX(1); }
+
+  @media (max-width: 560px) {
+    .service-scene__fallback { height: 168px; }
+    .service-scene__steps { top: calc(100% + 24px); gap: 16px; font-size: 11px; }
+  }
+</style>
