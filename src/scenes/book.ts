@@ -112,7 +112,7 @@ export function createScene(): ServiceScene {
     new THREE.CylinderGeometry(0.17, 0.17, 0.09, 3),
     new THREE.MeshStandardMaterial({ color: BRIGHT, emissive: TEAL, emissiveIntensity: 0.55, roughness: 0.3 }),
   );
-  play.rotation.y = -Math.PI / 2; // point toward the reader's right
+  play.rotation.y = Math.PI / 2; // point toward the reader's right
   const playHome = new THREE.Vector3(0.66, PAGE_T + 0.045, 0.36);
   const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTexture(), transparent: true, depthWrite: false }));
   halo.scale.setScalar(0.9);
