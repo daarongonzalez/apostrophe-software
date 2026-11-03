@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 import HeroGrid from '../components/HeroGrid.astro';
 import CtaBand from '../components/CtaBand.astro';
-import SprintsScene from '../components/SprintsScene.astro';
+import ServiceScene from '../components/ServiceScene.astro';
 import { SITE } from '../site';
 
 // Logo strip. Remote images are placeholders from the design and should be
@@ -21,6 +21,7 @@ const services = [
     body: 'Three weeks, our engineers and your team. We observe, audit, and strategize what AI can do for your org. Get to the value, cut the noise.',
     icon: '/images/icon-sprints.svg',
     scene: 'sprints',
+    steps: ['Observe', 'Audit', 'Strategize'],
     flip: false,
   },
   {
@@ -28,6 +29,8 @@ const services = [
     title: 'Forward deployed',
     body: 'An engineer inside your org running product planning and development. Trainings suited for every level of your organization, top to bottom.',
     icon: '/images/icon-forward-deployed.svg',
+    scene: 'deployed',
+    steps: ['Leadership', 'Managers', 'Teams'],
     flip: true,
   },
   {
@@ -110,8 +113,8 @@ const quotes = [
             <div class="glass__glow"></div>
             <div class="glass__ring">
               <div class="glass__inner">
-                {s.scene === 'sprints'
-                  ? <SprintsScene icon={s.icon} alt={s.title} />
+                {s.scene
+                  ? <ServiceScene scene={s.scene} steps={s.steps} icon={s.icon} alt={s.title} />
                   : <img src={s.icon} alt={s.title} loading="lazy" />}
               </div>
             </div>
