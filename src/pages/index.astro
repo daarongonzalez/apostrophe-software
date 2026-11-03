@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import HeroGrid from '../components/HeroGrid.astro';
 import CtaBand from '../components/CtaBand.astro';
+import SprintsScene from '../components/SprintsScene.astro';
 import { SITE } from '../site';
 
 // Logo strip. Remote images are placeholders from the design and should be
@@ -19,6 +20,7 @@ const services = [
     title: 'Enablement sprints',
     body: 'Three weeks, our engineers and your team. We observe, audit, and strategize what AI can do for your org. Get to the value, cut the noise.',
     icon: '/images/icon-sprints.svg',
+    scene: 'sprints',
     flip: false,
   },
   {
@@ -108,7 +110,9 @@ const quotes = [
             <div class="glass__glow"></div>
             <div class="glass__ring">
               <div class="glass__inner">
-                <img src={s.icon} alt={s.title} loading="lazy" />
+                {s.scene === 'sprints'
+                  ? <SprintsScene icon={s.icon} alt={s.title} />
+                  : <img src={s.icon} alt={s.title} loading="lazy" />}
               </div>
             </div>
           </div>
