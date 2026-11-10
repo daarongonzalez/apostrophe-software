@@ -1,0 +1,134 @@
+---
+import Base from '../../layouts/Base.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { projects } from '../../data/work';
+import { SITE } from '../../site';
+
+export function getStaticPaths() {
+  const withCase = projects.filter((p) => p.caseStudy);
+  return withCase.map((project, i) => ({
+    params: { slug: project.slug },
+    props: { project, previous: withCase[i - 1], next: withCase[i + 1] },
+  }));
+}
+
+const { project, previous, next } = Astro.props;
+const cs = project.caseStudy!;
+---
+<Base title={`${project.title} — Apostrophe Software`} description={cs.intro} active="work">
+  <section class="cs-intro pad-x">
+    <a href="/work" class="cs-back">← All work</a>
+    <div class="eyebrow eyebrow--marked cs-eyebrow"><span class="eyebrow__mark"></span>Case study · {project.tags.join(' · ')}</div>
+    <h1 class="heading cs-title">{project.title}</h1>
+    <p class="lead cs-lead">{cs.intro}</p>
+  </section>
+
+  <section class="cs-hero pad-x">
+    <div class="cs-hero__frame">
+      <img src={cs.heroImage} alt={cs.heroAlt} />
+    </div>
+  </section>
+
+  <section class="cs-story pad-x">
+    <div class="cs-story__col">
+      <div class="eyebrow cs-story__label">The problem</div>
+      <p>{cs.problem}</p>
+    </div>
+    <div class="cs-story__col">
+      <div class="eyebrow cs-story__label is-teal">What we built</div>
+      <p>{cs.solution}</p>
+    </div>
+  </section>
+
+  {cs.results.length > 0 && (
+    <section class="cs-results pad-x" aria-label="Results">
+      {cs.results.map((r) => (
+        <div class="cs-results__item">
+          <div class="cs-results__value">{r.value}</div>
+          <div class="cs-results__label">{r.label}</div>
+        </div>
+      ))}
+    </section>
+  )}
+
+  {cs.gallery.length > 0 && (
+    <section class="cs-gallery pad-x">
+      <h2 class="heading cs-gallery__title">Screens</h2>
+      {cs.gallery.map((g) => (
+        <figure class="cs-gallery__item">
+          <img src={g.src} alt={g.caption} loading="lazy" />
+          <figcaption>{g.caption}</figcaption>
+        </figure>
+      ))}
+    </section>
+  )}
+
+  {(previous || next) && (
+    <nav class="cs-pager pad-x" aria-label="More case studies">
+      {previous ? <a href={`/work/${previous.slug}`}>← {previous.title}</a> : <span />}
+      {next ? <a href={`/work/${next.slug}`} class="is-next">{next.title} →</a> : <span />}
+    </nav>
+  )}
+
+  <CtaBand
+    headline="Have a problem like this one?"
+    body="Thirty minutes. We'll tell you whether a custom build is the right answer, or whether something simpler will do."
+    ctaLabel="Book a demo →"
+    ctaHref={SITE.bookingUrl}
+  />
+</Base>
+
+<style>
+  .cs-intro { padding-top: 56px; padding-bottom: 48px; }
+  .cs-back { display: table; margin-bottom: 32px; font-size: 15px; font-weight: 600; }
+  .cs-back:hover { box-shadow: inset 0 -9px 0 rgba(31, 200, 169, .35); }
+  .cs-eyebrow { margin-bottom: 22px; }
+  .cs-title { margin: 0 0 20px; font-size: clamp(38px, 5vw, 60px); line-height: 1.02; }
+  .cs-lead { font-size: 19px; line-height: 1.55; max-width: 36em; }
+
+  .cs-hero__frame { border: 1.5px solid var(--ink); background: var(--surface); }
+  .cs-hero__frame img { width: 100%; height: auto; }
+
+  .cs-story {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 56px;
+    padding-top: 80px;
+    padding-bottom: 80px;
+  }
+  .cs-story__col { padding-top: 28px; border-top: 1.5px solid var(--ink); }
+  .cs-story__label { color: var(--blue); margin-bottom: 16px; }
+  .cs-story__label.is-teal { color: var(--teal-deep); }
+  .cs-story p { font-size: 19px; line-height: 1.55; text-wrap: pretty; }
+
+  .cs-results { display: grid; grid-template-columns: repeat(3, 1fr); background: var(--ink); }
+  .cs-results__item { padding: 34px 24px 32px; border-right: 1px solid var(--rule-dark); }
+  .cs-results__item:first-child { padding-left: 0; }
+  .cs-results__item:last-child { border-right: 0; }
+  .cs-results__value { font-family: var(--font-mono); font-size: 40px; font-weight: 700; line-height: 1; color: var(--white); }
+  .cs-results__label { font-size: 14.5px; color: var(--stat-text); margin-top: 9px; }
+
+  .cs-gallery { padding-top: 80px; padding-bottom: 32px; }
+  .cs-gallery__title { margin-bottom: 28px; font-size: 29px; }
+  .cs-gallery__item { margin: 0 0 48px; }
+  .cs-gallery__item img { width: 100%; height: auto; border: 1.5px solid var(--border); }
+  .cs-gallery__item figcaption { margin-top: 12px; font-family: var(--font-mono); font-size: 13.2px; color: var(--muted); }
+
+  .cs-pager {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    padding-top: 28px;
+    padding-bottom: 28px;
+    border-top: 1px solid var(--border);
+    font-weight: 600;
+  }
+
+  @media (max-width: 900px) {
+    .cs-story { grid-template-columns: 1fr; gap: 40px; padding-top: 56px; padding-bottom: 56px; }
+    .cs-results { grid-template-columns: 1fr; }
+    .cs-results__item { padding: 26px 0; border-right: 0; border-bottom: 1px solid var(--rule-dark); }
+    .cs-results__item:last-child { border-bottom: 0; }
+    .cs-gallery { padding-top: 56px; }
+  }
+</style>

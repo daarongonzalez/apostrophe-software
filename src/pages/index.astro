@@ -3,7 +3,11 @@ import Base from '../layouts/Base.astro';
 import HeroGrid from '../components/HeroGrid.astro';
 import CtaBand from '../components/CtaBand.astro';
 import ServiceScene from '../components/ServiceScene.astro';
+import ProjectCard from '../components/work/ProjectCard.astro';
 import { SITE } from '../site';
+import { projects } from '../data/work';
+
+const featuredProjects = projects.filter((p) => p.featured).slice(0, 3);
 
 // Logo strip. Remote images are placeholders from the design and should be
 // swapped for local files in /public/images before launch.
@@ -129,6 +133,17 @@ const quotes = [
           </div>
         </div>
       ))}
+    </div>
+  </section>
+
+  <!-- Recent work -->
+  <section class="recent pad-x">
+    <div class="recent__head">
+      <h2 class="heading section-title">Recent Work</h2>
+      <a href="/work" class="text-link">See all our work →</a>
+    </div>
+    <div class="recent__grid">
+      {featuredProjects.map((p) => <ProjectCard project={p} />)}
     </div>
   </section>
 
@@ -334,6 +349,12 @@ const quotes = [
   .fluent__row:hover .num-chip { font-weight: 700; }
   .fluent__row:hover .num-chip__line { transform: scaleX(1); }
 
+  /* Recent work */
+  .recent { padding-top: 96px; padding-bottom: 104px; border-top: 1px solid var(--border); background: var(--surface); }
+  .recent__head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 40px; }
+  .recent__head .text-link { align-self: auto; flex: none; }
+  .recent__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
+
   /* Stats */
   .stats {
     display: grid;
@@ -407,6 +428,10 @@ const quotes = [
     .fluent__row, .fluent__row--flip { grid-template-columns: 1fr; gap: 36px; }
     .fluent__row--flip .glass { order: 0; }
     .fluent__text, .fluent__row--flip .fluent__text { padding: 0; }
+
+    .recent { padding-top: 72px; padding-bottom: 80px; }
+    .recent__head { flex-direction: column; align-items: flex-start; }
+    .recent__grid { grid-template-columns: 1fr; }
 
     .stats { grid-template-columns: 1fr 1fr; }
     .stats__item { padding: 30px 20px 28px 0; border-right: 0; }
