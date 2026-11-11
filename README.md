@@ -26,7 +26,7 @@ npm run build    # static files in dist/
 - **Booking, contact and newsletter links:** `src/site.ts`. These are email placeholders for now.
 - **Coming Soon sections:** the event list, team grid and blog posts are built but switched off. Set the matching flag in `FEATURES` in `src/site.ts` to `true` to show them.
 - **Colors, fonts and spacing:** tokens at the top of `src/styles/global.css`.
-- **Work page content:** `src/data/work.ts`. Add a `caseStudy` to a project to give it its own page.
+- **Work page content:** `src/data/work.ts`. Add a `caseStudy` to a project to give it its own page. Set `spotlight: true` on any item to call it out with the Rare Frame card; everything else uses the dark Prism card.
 - **Images:** `public/images` (work images in `public/images/work`) and `public/brand`.
 
 ## Deploy

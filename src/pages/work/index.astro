@@ -6,7 +6,7 @@ import ProjectCard from '../../components/work/ProjectCard.astro';
 import WorkshopCard from '../../components/work/WorkshopCard.astro';
 import PhotoCard from '../../components/work/PhotoCard.astro';
 import { projects, workshops, series, sessionPhotos } from '../../data/work';
-import { SITE, CARD_STYLES } from '../../site';
+import { SITE } from '../../site';
 
 const no = (i: number) => String(i + 1).padStart(2, '0');
 
@@ -81,16 +81,6 @@ const sections = [
   />
 </Base>
 
-<script define:vars={{ styles: CARD_STYLES }}>
-  // Preview another card style on this page: /work?card=rare
-  const pick = new URLSearchParams(location.search).get('card');
-  if (pick && styles.includes(pick)) {
-    document.querySelectorAll('[data-card]').forEach((card) => {
-      styles.forEach((s) => card.classList.remove(`cf--${s}`));
-      card.classList.add(`cf--${pick}`);
-    });
-  }
-</script>
 
 <style>
   .work-intro {

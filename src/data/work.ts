@@ -13,6 +13,8 @@ export interface Project {
   imageAlt: string;
   /** Show on the home page. */
   featured: boolean;
+  /** Call it out with the Rare Frame card. */
+  spotlight?: boolean;
   /** With a case study, the project gets its own page at /work/[slug]. */
   caseStudy?: {
     intro: string;
@@ -36,6 +38,8 @@ export interface Workshop {
   /** Recording, sign-up or recap page. Without one, the card isn't a link. */
   url?: string;
   featured: boolean;
+  /** Call it out with the Rare Frame card. */
+  spotlight?: boolean;
 }
 
 export interface SessionPhoto {
@@ -44,6 +48,8 @@ export interface SessionPhoto {
   image: string;
   orientation: 'portrait' | 'landscape';
   featured: boolean;
+  /** Call it out with the Rare Frame card. */
+  spotlight?: boolean;
 }
 
 export const projects: Project[] = [
@@ -55,6 +61,7 @@ export const projects: Project[] = [
     image: '/images/work/project-rapidschema-thumb.webp',
     imageAlt: 'RapidSchema dashboard',
     featured: true,
+    spotlight: true,
     caseStudy: {
       intro: 'A custom tool we designed and built for a large e-commerce platform. It manages the structured data search engines read on every product page, so the SEO team no longer does it by hand.',
       heroImage: '/images/work/project-rapidschema-hero.webp',
@@ -101,6 +108,7 @@ export const workshops: Workshop[] = [
     image: '/images/work/workshop-first-product-claude-code.webp',
     ratio: SESSION_RATIO,
     featured: true,
+    spotlight: true,
   },
   {
     title: 'Introduction to Claude Skills',
@@ -179,6 +187,7 @@ export const sessionPhotos: SessionPhoto[] = [
     image: '/images/work/photo-pluralsight-author-summit.webp',
     orientation: 'landscape',
     featured: true,
+    spotlight: true,
   },
   {
     caption: 'Walking a room through a live demo at Silicon Slopes',

@@ -1,21 +1,23 @@
 ---
-// Collectible-card frame shared by every Work card. The look comes from
-// `variant` (see CARD_STYLES in src/site.ts); styles live in src/styles/cards.css.
+// Collectible-card frame shared by every Work card. Styles: src/styles/cards.css.
+// Every card uses the dark Prism style; spotlight cards use the Rare Frame
+// to call them out.
 import '../../styles/cards.css';
-import { CARD_STYLE, type CardStyle } from '../../site';
 
 interface Props {
-  variant?: CardStyle;
-  /** Card type, printed on the frame of the "rare" style: Build, Workshop, Session. */
+  /** Call this card out with the Rare Frame. */
+  spotlight?: boolean;
+  /** Card type, printed on the Rare Frame: Client build, Workshop, In the room. */
   kind: string;
-  /** Card number, e.g. "01". Printed on the frame of the "rare" style. */
+  /** Card number, e.g. "01". Printed on the Rare Frame. */
   num?: string;
   href?: string;
   external?: boolean;
   class?: string;
 }
 
-const { variant = CARD_STYLE, kind, num, href, external = false, class: className } = Astro.props;
+const { spotlight = false, kind, num, href, external = false, class: className } = Astro.props;
+const variant = spotlight ? 'rare' : 'prism';
 const Tag = href ? 'a' : 'article';
 const linkAttrs = href
   ? { href, ...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {}) }

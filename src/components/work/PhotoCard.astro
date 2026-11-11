@@ -1,16 +1,14 @@
 ---
 import CardFrame from './CardFrame.astro';
 import type { SessionPhoto } from '../../data/work';
-import type { CardStyle } from '../../site';
 
 interface Props {
   photo: SessionPhoto;
   num?: string;
-  variant?: CardStyle;
 }
-const { photo, num, variant } = Astro.props;
+const { photo, num } = Astro.props;
 ---
-<CardFrame kind="In the room" num={num} variant={variant} class={`photo--${photo.orientation}`}>
+<CardFrame kind="In the room" num={num} spotlight={photo.spotlight} class={`photo--${photo.orientation}`}>
   <figure class="photo">
     <img src={photo.image} alt={photo.alt} loading="lazy" />
     <figcaption>

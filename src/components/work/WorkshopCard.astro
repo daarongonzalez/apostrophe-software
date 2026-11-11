@@ -1,16 +1,14 @@
 ---
 import CardFrame from './CardFrame.astro';
 import type { Workshop } from '../../data/work';
-import type { CardStyle } from '../../site';
 
 interface Props {
   workshop: Workshop;
   num?: string;
-  variant?: CardStyle;
 }
-const { workshop, num, variant } = Astro.props;
+const { workshop, num } = Astro.props;
 ---
-<CardFrame kind="Workshop" num={num} href={workshop.url} external variant={variant}>
+<CardFrame kind="Workshop" num={num} href={workshop.url} external spotlight={workshop.spotlight}>
   <!-- The frame takes the image's own shape so nothing is cropped. -->
   <div class="workshop__img" style={`aspect-ratio:${workshop.ratio}`}>
     <img src={workshop.image} alt="" loading="lazy" />
