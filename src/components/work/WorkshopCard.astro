@@ -1,0 +1,38 @@
+---
+import CardFrame from './CardFrame.astro';
+import type { Workshop } from '../../data/work';
+
+interface Props {
+  workshop: Workshop;
+  num?: string;
+}
+const { workshop, num } = Astro.props;
+---
+<CardFrame kind="Workshop" num={num} href={workshop.url} external spotlight={workshop.spotlight}>
+  <!-- The frame takes the image's own shape so nothing is cropped. -->
+  <div class="workshop__img" style={`aspect-ratio:${workshop.ratio}`}>
+    <img src={workshop.image} alt="" loading="lazy" />
+  </div>
+  <div class="workshop__body">
+    <div class="workshop__eyebrow">{workshop.eyebrow}</div>
+    <h3 class="heading workshop__title">{workshop.title}</h3>
+    {workshop.description && <p class="workshop__desc">{workshop.description}</p>}
+  </div>
+</CardFrame>
+
+<style>
+  .workshop__img { width: 100%; overflow: hidden; border-bottom: 1px solid var(--card-rule); background: var(--ink); }
+  .workshop__img img { width: 100%; height: 100%; object-fit: cover; }
+  .workshop__body { padding: 20px 22px 24px; }
+  .workshop__eyebrow {
+    margin-bottom: 8px;
+    font-family: var(--font-mono);
+    font-size: 11.8px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--card-accent-2);
+  }
+  .workshop__title { font-size: 18px; line-height: 1.2; }
+  .workshop__desc { margin-top: 8px; font-size: 15px; line-height: 1.55; color: var(--card-sub); }
+</style>

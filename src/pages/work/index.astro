@@ -1,0 +1,140 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageIntro from '../../components/PageIntro.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import ProjectCard from '../../components/work/ProjectCard.astro';
+import WorkshopCard from '../../components/work/WorkshopCard.astro';
+import PhotoCard from '../../components/work/PhotoCard.astro';
+import { projects, workshops, series, sessionPhotos } from '../../data/work';
+import { SITE } from '../../site';
+
+const no = (i: number) => String(i + 1).padStart(2, '0');
+
+const sections = [
+  { id: 'builds', label: 'Client builds' },
+  { id: 'workshops', label: 'Workshops' },
+  { id: 'room', label: 'In the room' },
+];
+---
+<Base
+  title="Work — Apostrophe Software"
+  description="Products we've built for clients, workshops we've run, and moments from live sessions."
+  active="work"
+>
+  <PageIntro eyebrow="Our work" title="Proof, Not Promises" tint class="work-intro">
+    <p class="lead work-intro__lead">Products we've built for clients, workshops we've run for teams, and a few moments from the room. Every one started with a real problem.</p>
+    <nav slot="aside" class="jump" aria-label="On this page">
+      {sections.map((s, i) => (
+        <a href={`#${s.id}`} class="jump__link">
+          <span class="jump__num">{String(i + 1).padStart(2, '0')}</span>{s.label}
+        </a>
+      ))}
+    </nav>
+  </PageIntro>
+
+  <section id="builds" class="block pad-x">
+    <div class="block__head">
+      <div class="eyebrow block__num">01</div>
+      <h2 class="heading block__title">Client builds</h2>
+      <p class="block__sub">Tools we designed and built, then handed over to the teams who run them.</p>
+    </div>
+    <div class="grid grid--3">
+      {projects.map((p, i) => <ProjectCard project={p} num={no(i)} />)}
+    </div>
+  </section>
+
+  <section id="workshops" class="block block--tint pad-x">
+    <div class="block__head">
+      <div class="eyebrow block__num">02</div>
+      <h2 class="heading block__title">Workshops</h2>
+      <p class="block__sub">Live, hands-on sessions. Every seat builds something real before the end.</p>
+    </div>
+    <div class="grid grid--2">
+      {workshops.map((w, i) => <WorkshopCard workshop={w} num={no(i)} />)}
+    </div>
+
+    <div class="series">
+      <h3 class="heading series__title">{series.title}</h3>
+      <p class="block__sub">{series.blurb}</p>
+      <div class="grid grid--2">
+        {series.parts.map((w, i) => <WorkshopCard workshop={w} num={`S${i + 1}`} />)}
+      </div>
+    </div>
+  </section>
+
+  <section id="room" class="block pad-x">
+    <div class="block__head">
+      <div class="eyebrow block__num">03</div>
+      <h2 class="heading block__title">In the room</h2>
+      <p class="block__sub">Talks and live sessions with teams and communities.</p>
+    </div>
+    <div class="photos">
+      {sessionPhotos.map((p, i) => <PhotoCard photo={p} num={no(i)} />)}
+    </div>
+  </section>
+
+  <CtaBand
+    headline="Want a workshop for your team?"
+    body="We'll shape a session around the tools your team already has and the work they need to get back to."
+    ctaLabel="Book a demo →"
+    ctaHref={SITE.bookingUrl}
+  />
+</Base>
+
+
+<style>
+  .work-intro {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 40px;
+    padding-top: 70px;
+    padding-bottom: 56px;
+  }
+  .work-intro :global(.intro__title) { margin: 0 0 20px; font-size: clamp(34px, 4.2vw, 49px); }
+  .work-intro__lead { font-size: 19px; line-height: 1.5; max-width: 32em; }
+
+  .jump { display: flex; flex-direction: column; flex: none; min-width: 220px; border-top: 1.5px solid var(--ink); }
+  .jump__link {
+    display: flex;
+    gap: 14px;
+    padding: 13px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 16px;
+    font-weight: 500;
+  }
+  .jump__link:hover { box-shadow: inset 0 -9px 0 rgba(31, 200, 169, .35); }
+  .jump__num { font-family: var(--font-mono); font-size: 13px; color: var(--muted); padding-top: 2px; }
+
+  .block { padding-top: 88px; padding-bottom: 96px; border-bottom: 1px solid var(--border); scroll-margin-top: 16px; }
+  .block--tint { background: var(--surface); }
+  .block__head { margin-bottom: 40px; }
+  .block__num { color: var(--teal-deep); margin-bottom: 14px; }
+  .block__title { margin: 0 0 10px; font-size: clamp(28px, 3.2vw, 36px); line-height: 1.05; }
+  .block__sub { font-size: 18px; line-height: 1.5; color: var(--slate); max-width: 36em; }
+
+  .grid { display: grid; gap: 36px 32px; }
+  .grid--3 { grid-template-columns: repeat(3, 1fr); }
+  .grid--2 { grid-template-columns: repeat(2, 1fr); }
+
+  .series { margin-top: 72px; padding-top: 40px; border-top: 1.5px solid var(--ink); }
+  .series__title { margin: 0 0 10px; font-size: 24px; }
+  .series .block__sub { margin-bottom: 32px; }
+
+  /* Portrait photos take one column, landscape photos take two. */
+  .photos { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 480px; gap: 32px; }
+  .photos :global(.photo--landscape) { grid-column: span 2; }
+
+  @media (max-width: 900px) {
+    .work-intro { flex-direction: column; align-items: stretch; padding-top: 56px; padding-bottom: 48px; }
+    .block { padding-top: 64px; padding-bottom: 72px; }
+    .grid--3 { grid-template-columns: 1fr 1fr; }
+    .photos { grid-template-columns: 1fr 1fr; grid-auto-rows: 400px; }
+  }
+  @media (max-width: 640px) {
+    .grid--3, .grid--2 { grid-template-columns: 1fr; }
+    .photos { grid-template-columns: 1fr; grid-auto-rows: auto; }
+    .photos :global(.cf) { aspect-ratio: 3 / 4; }
+    .photos :global(.photo--landscape) { grid-column: auto; aspect-ratio: 4 / 3; }
+  }
+</style>

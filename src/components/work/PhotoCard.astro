@@ -1,0 +1,49 @@
+---
+import CardFrame from './CardFrame.astro';
+import type { SessionPhoto } from '../../data/work';
+
+interface Props {
+  photo: SessionPhoto;
+  num?: string;
+}
+const { photo, num } = Astro.props;
+---
+<CardFrame kind="In the room" num={num} spotlight={photo.spotlight} class={`photo--${photo.orientation}`}>
+  <figure class="photo">
+    <img src={photo.image} alt={photo.alt} loading="lazy" />
+    <figcaption>
+      <span class="photo__kicker">In the room</span>
+      <span class="photo__caption">{photo.caption}</span>
+    </figcaption>
+  </figure>
+</CardFrame>
+
+<style>
+  .photo {
+    position: relative;
+    flex: 1;
+    margin: 0;
+    min-height: 320px;
+    background: var(--ink);
+  }
+  .photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .photo figcaption {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 56px 20px 20px;
+    background: linear-gradient(to top, rgba(28,29,31,.92), rgba(28,29,31,.6) 55%, rgba(28,29,31,0));
+    color: var(--white);
+  }
+  .photo__kicker {
+    font-family: var(--font-mono);
+    font-size: 11.8px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--teal-bright);
+  }
+  .photo__caption { font-size: 15px; font-weight: 600; line-height: 1.4; }
+</style>

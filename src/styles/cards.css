@@ -1,0 +1,144 @@
+/* ─── Work cards ─────────────────────────────────────────────
+   prism   Prism       the default: dark card, slowly turning gradient edge, glow
+   rare    Rare Frame  for spotlight items: thick foil frame with a card number
+   Content inside the frame reads the --card-* colors, so the dark Prism
+   style only has to change those. */
+
+@property --cf-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.cf {
+  --card-bg: var(--white);
+  --card-text: var(--ink);
+  --card-sub: var(--slate);
+  --card-rule: var(--border);
+  --card-accent: var(--blue);
+  --card-accent-2: var(--teal-deep);
+  --mx: 50%;
+  --my: 50%;
+  --rx: 0deg;
+  --ry: 0deg;
+  --tilt: 1;
+  --lift: 0px;
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  color: var(--card-text);
+  transform:
+    perspective(1000px)
+    translateY(var(--lift))
+    rotateX(calc(var(--rx) * var(--tilt)))
+    rotateY(calc(var(--ry) * var(--tilt)));
+  transition: transform .6s cubic-bezier(.2, .8, .2, 1), box-shadow .4s ease;
+  will-change: transform;
+}
+.cf.is-tilting { transition: transform .1s linear, box-shadow .4s ease; }
+
+.cf__inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+  background: var(--card-bg);
+}
+.cf__strip { display: none; }
+.cf__fx { display: none; }
+
+/* ── Rare Frame (spotlight) ────────────────────────────────────────── */
+.cf--rare {
+  padding: 0 9px 9px;
+  border: 1.5px solid var(--ink);
+  border-radius: 16px;
+  background: linear-gradient(140deg, #1E76C7, #1FC8A9 55%, #2FE0BE);
+  box-shadow:
+    6px 6px 0 var(--ink),
+    0 30px 54px -22px rgba(30, 118, 199, .5);
+}
+/* Foil lines and glare across the frame */
+.cf--rare::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    radial-gradient(farthest-corner circle at var(--mx) var(--my), rgba(255, 255, 255, .5), rgba(255, 255, 255, 0) 40%),
+    repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0) 0 7px, rgba(255, 255, 255, .2) 7px 8px);
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+.cf--rare .cf__strip {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 4px 8px;
+  font-family: var(--font-mono);
+  font-size: 11.3px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--white);
+  text-shadow: 0 1px 0 rgba(28, 29, 31, .35);
+}
+.cf--rare .cf__inner { border: 1.5px solid var(--ink); border-radius: 9px; }
+.cf--rare .cf__fx {
+  display: block;
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(farthest-corner circle at var(--mx) var(--my), rgba(255, 255, 255, .35), rgba(255, 255, 255, 0) 38%);
+  mix-blend-mode: soft-light;
+  opacity: 0;
+  transition: opacity .4s ease;
+}
+.cf--rare:hover { --lift: -6px; box-shadow: 9px 10px 0 var(--ink), 0 40px 64px -24px rgba(30, 118, 199, .6); }
+.cf--rare:hover .cf__fx { opacity: 1; }
+
+/* ── Prism (default) ─────────────────────────────────────────────── */
+.cf--prism {
+  --card-bg: #1C1D1F;
+  --card-text: var(--white);
+  --card-sub: #C9CDD1;
+  --card-rule: #2F3133;
+  --card-accent: var(--teal-bright);
+  --card-accent-2: #8FD8F0;
+  --tilt: .6;
+  padding: 2.5px;
+  border-radius: 8px;
+  background: conic-gradient(from var(--cf-angle), #1E76C7, #1FC8A9, #2FE0BE, #8FD8F0, #1E76C7 70%, #1E76C7);
+  box-shadow:
+    0 0 0 1px rgba(28, 29, 31, .9),
+    0 16px 40px -14px rgba(31, 200, 169, .45),
+    0 26px 60px -20px rgba(30, 118, 199, .55);
+  animation: cf-turn 9s linear infinite;
+}
+.cf--prism .cf__inner {
+  border-radius: 5.5px;
+  background:
+    radial-gradient(120% 70% at var(--mx) 0%, rgba(47, 224, 190, .10), rgba(47, 224, 190, 0) 60%),
+    var(--card-bg);
+}
+.cf--prism:hover {
+  --lift: -6px;
+  animation-duration: 3s;
+  box-shadow:
+    0 0 0 1px rgba(28, 29, 31, .9),
+    0 20px 50px -12px rgba(31, 200, 169, .65),
+    0 34px 74px -20px rgba(30, 118, 199, .7);
+}
+@keyframes cf-turn { to { --cf-angle: 360deg; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .cf { transition: box-shadow .4s ease; }
+  .cf--prism, .cf--prism:hover { animation: none; }
+}

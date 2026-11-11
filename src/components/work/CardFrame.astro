@@ -1,0 +1,63 @@
+---
+// Collectible-card frame shared by every Work card. Styles: src/styles/cards.css.
+// Every card uses the dark Prism style; spotlight cards use the Rare Frame
+// to call them out.
+import '../../styles/cards.css';
+
+interface Props {
+  /** Call this card out with the Rare Frame. */
+  spotlight?: boolean;
+  /** Card type, printed on the Rare Frame: Client build, Workshop, In the room. */
+  kind: string;
+  /** Card number, e.g. "01". Printed on the Rare Frame. */
+  num?: string;
+  href?: string;
+  external?: boolean;
+  class?: string;
+}
+
+const { spotlight = false, kind, num, href, external = false, class: className } = Astro.props;
+const variant = spotlight ? 'rare' : 'prism';
+const Tag = href ? 'a' : 'article';
+const linkAttrs = href
+  ? { href, ...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {}) }
+  : {};
+---
+<Tag {...linkAttrs} class:list={['cf', `cf--${variant}`, { 'is-link': href }, className]} data-card>
+  <div class="cf__strip" aria-hidden="true">
+    <span>{kind}</span>
+    {num && <span>No. {num}</span>}
+  </div>
+  <div class="cf__inner"><slot /></div>
+  <div class="cf__fx" aria-hidden="true"></div>
+</Tag>
+
+<script>
+  // Tilt the card toward the pointer and move the foil and glare with it.
+  // Skipped on touch screens and for people who prefer less motion.
+  const canTilt = window.matchMedia('(hover: hover) and (prefers-reduced-motion: no-preference)').matches;
+
+  if (canTilt) {
+    document.querySelectorAll<HTMLElement>('[data-card]').forEach((card) => {
+      let frame = 0;
+      card.addEventListener('pointermove', (e) => {
+        const box = card.getBoundingClientRect();
+        const x = (e.clientX - box.left) / box.width;
+        const y = (e.clientY - box.top) / box.height;
+        cancelAnimationFrame(frame);
+        frame = requestAnimationFrame(() => {
+          card.classList.add('is-tilting');
+          card.style.setProperty('--mx', `${(x * 100).toFixed(1)}%`);
+          card.style.setProperty('--my', `${(y * 100).toFixed(1)}%`);
+          card.style.setProperty('--rx', `${((0.5 - y) * 9).toFixed(2)}deg`);
+          card.style.setProperty('--ry', `${((x - 0.5) * 11).toFixed(2)}deg`);
+        });
+      });
+      card.addEventListener('pointerleave', () => {
+        cancelAnimationFrame(frame);
+        card.classList.remove('is-tilting');
+        ['--mx', '--my', '--rx', '--ry'].forEach((p) => card.style.removeProperty(p));
+      });
+    });
+  }
+</script>
