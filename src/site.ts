@@ -18,6 +18,11 @@ export const NAV = [
   { label: 'Blog', href: '/blog', key: 'blog' },
 ] as const;
 
+// Look of the cards on /work and the home page. Compare all four at /work/cards.
+export const CARD_STYLES = ['holo', 'hollow', 'rare', 'prism'] as const;
+export type CardStyle = (typeof CARD_STYLES)[number];
+export const CARD_STYLE: CardStyle = 'holo';
+
 // Launch state: these sections show "Coming Soon" until switched on.
 export const FEATURES = {
   eventsList: false,

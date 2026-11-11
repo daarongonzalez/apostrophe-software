@@ -1,15 +1,18 @@
 ---
+import CardFrame from './CardFrame.astro';
 import type { Project } from '../../data/work';
+import type { CardStyle } from '../../site';
 
 interface Props {
   project: Project;
+  num?: string;
+  variant?: CardStyle;
 }
-const { project } = Astro.props;
+const { project, num, variant } = Astro.props;
 // Only projects with a case study have a page to open.
 const href = project.caseStudy ? `/work/${project.slug}` : undefined;
-const Tag = href ? 'a' : 'article';
 ---
-<Tag href={href} class:list={['project', { 'is-link': href }]}>
+<CardFrame kind="Client build" num={num} href={href} variant={variant}>
   <div class="project__img">
     <img src={project.image} alt={project.imageAlt} loading="lazy" />
   </div>
@@ -21,26 +24,17 @@ const Tag = href ? 'a' : 'article';
     <p class="project__summary">{project.summary}</p>
     {href && <span class="project__more">Read the case study →</span>}
   </div>
-</Tag>
+</CardFrame>
 
 <style>
-  .project {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    border: 1.5px solid var(--border);
-    background: var(--white);
-    transition: border-color .25s ease;
-  }
-  .project.is-link:hover { border-color: var(--ink); }
   .project__img {
     aspect-ratio: 16 / 10;
     overflow: hidden;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid var(--card-rule);
     background: var(--surface);
   }
   .project__img img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
-  .project__body { display: flex; flex-direction: column; flex: 1; padding: 24px 24px 26px; }
+  .project__body { display: flex; flex-direction: column; flex: 1; padding: 22px 24px 26px; }
   .project__tags {
     display: flex;
     flex-wrap: wrap;
@@ -51,14 +45,9 @@ const Tag = href ? 'a' : 'article';
     font-weight: 700;
     letter-spacing: .04em;
     text-transform: uppercase;
-    color: var(--blue);
+    color: var(--card-accent);
   }
   .project__title { margin: 0 0 10px; font-size: 21px; line-height: 1.15; }
-  .project__summary { font-size: 15.5px; line-height: 1.55; color: var(--slate); }
-  .project__more {
-    margin-top: auto;
-    padding-top: 20px;
-    font-size: 15px;
-    font-weight: 600;
-  }
+  .project__summary { font-size: 15.5px; line-height: 1.55; color: var(--card-sub); }
+  .project__more { margin-top: auto; padding-top: 20px; font-size: 15px; font-weight: 600; }
 </style>

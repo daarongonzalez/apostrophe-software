@@ -143,7 +143,7 @@ const quotes = [
       <a href="/work" class="text-link">See all our work →</a>
     </div>
     <div class="recent__grid">
-      {featuredProjects.map((p) => <ProjectCard project={p} />)}
+      {featuredProjects.map((p, i) => <ProjectCard project={p} num={String(i + 1).padStart(2, '0')} />)}
     </div>
   </section>
 
@@ -353,7 +353,7 @@ const quotes = [
   .recent { padding-top: 96px; padding-bottom: 104px; border-top: 1px solid var(--border); background: var(--surface); }
   .recent__head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 40px; }
   .recent__head .text-link { align-self: auto; flex: none; }
-  .recent__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
+  .recent__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
 
   /* Stats */
   .stats {

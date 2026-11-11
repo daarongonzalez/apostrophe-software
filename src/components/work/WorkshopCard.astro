@@ -1,14 +1,16 @@
 ---
+import CardFrame from './CardFrame.astro';
 import type { Workshop } from '../../data/work';
+import type { CardStyle } from '../../site';
 
 interface Props {
   workshop: Workshop;
+  num?: string;
+  variant?: CardStyle;
 }
-const { workshop } = Astro.props;
-const Tag = workshop.url ? 'a' : 'article';
-const linkAttrs = workshop.url ? { href: workshop.url, target: '_blank', rel: 'noopener noreferrer' } : {};
+const { workshop, num, variant } = Astro.props;
 ---
-<Tag {...linkAttrs} class:list={['workshop', { 'is-link': workshop.url }]}>
+<CardFrame kind="Workshop" num={num} href={workshop.url} external variant={variant}>
   <!-- The frame takes the image's own shape so nothing is cropped. -->
   <div class="workshop__img" style={`aspect-ratio:${workshop.ratio}`}>
     <img src={workshop.image} alt="" loading="lazy" />
@@ -18,19 +20,10 @@ const linkAttrs = workshop.url ? { href: workshop.url, target: '_blank', rel: 'n
     <h3 class="heading workshop__title">{workshop.title}</h3>
     {workshop.description && <p class="workshop__desc">{workshop.description}</p>}
   </div>
-</Tag>
+</CardFrame>
 
 <style>
-  .workshop {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    border: 1.5px solid var(--border);
-    background: var(--white);
-    transition: border-color .25s ease;
-  }
-  .workshop.is-link:hover { border-color: var(--ink); }
-  .workshop__img { width: 100%; overflow: hidden; border-bottom: 1px solid var(--border); background: var(--ink); }
+  .workshop__img { width: 100%; overflow: hidden; border-bottom: 1px solid var(--card-rule); background: var(--ink); }
   .workshop__img img { width: 100%; height: 100%; object-fit: cover; }
   .workshop__body { padding: 20px 22px 24px; }
   .workshop__eyebrow {
@@ -40,8 +33,8 @@ const linkAttrs = workshop.url ? { href: workshop.url, target: '_blank', rel: 'n
     font-weight: 700;
     letter-spacing: .04em;
     text-transform: uppercase;
-    color: var(--teal-deep);
+    color: var(--card-accent-2);
   }
   .workshop__title { font-size: 18px; line-height: 1.2; }
-  .workshop__desc { margin-top: 8px; font-size: 15px; line-height: 1.55; color: var(--slate); }
+  .workshop__desc { margin-top: 8px; font-size: 15px; line-height: 1.55; color: var(--card-sub); }
 </style>

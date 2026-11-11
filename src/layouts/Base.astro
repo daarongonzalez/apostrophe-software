@@ -7,10 +7,12 @@ import { SITE } from '../site';
 interface Props {
   title: string;
   description: string;
+  /** Keep a page out of search results (e.g. design previews). */
+  noindex?: boolean;
   active?: 'services' | 'work' | 'about' | 'events' | 'blog';
 }
 
-const { title, description, active } = Astro.props;
+const { title, description, active, noindex = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, SITE.url).toString();
 ---
 <!doctype html>
@@ -21,6 +23,7 @@ const canonical = new URL(Astro.url.pathname, SITE.url).toString();
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={SITE.name} />

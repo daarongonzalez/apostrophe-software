@@ -1,27 +1,31 @@
 ---
+import CardFrame from './CardFrame.astro';
 import type { SessionPhoto } from '../../data/work';
+import type { CardStyle } from '../../site';
 
 interface Props {
   photo: SessionPhoto;
+  num?: string;
+  variant?: CardStyle;
 }
-const { photo } = Astro.props;
+const { photo, num, variant } = Astro.props;
 ---
-<figure class:list={['photo', `photo--${photo.orientation}`]}>
-  <img src={photo.image} alt={photo.alt} loading="lazy" />
-  <figcaption>
-    <span class="photo__kicker">In the room</span>
-    <span class="photo__caption">{photo.caption}</span>
-  </figcaption>
-</figure>
+<CardFrame kind="In the room" num={num} variant={variant} class={`photo--${photo.orientation}`}>
+  <figure class="photo">
+    <img src={photo.image} alt={photo.alt} loading="lazy" />
+    <figcaption>
+      <span class="photo__kicker">In the room</span>
+      <span class="photo__caption">{photo.caption}</span>
+    </figcaption>
+  </figure>
+</CardFrame>
 
 <style>
   .photo {
     position: relative;
+    flex: 1;
     margin: 0;
-    height: 100%;
-    min-height: 340px;
-    overflow: hidden;
-    border: 1.5px solid var(--ink);
+    min-height: 320px;
     background: var(--ink);
   }
   .photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
@@ -31,7 +35,7 @@ const { photo } = Astro.props;
     display: flex;
     flex-direction: column;
     gap: 6px;
-    padding: 56px 22px 22px;
+    padding: 56px 20px 20px;
     background: linear-gradient(to top, rgba(28,29,31,.92), rgba(28,29,31,.6) 55%, rgba(28,29,31,0));
     color: var(--white);
   }
