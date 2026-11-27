@@ -14,12 +14,19 @@ export function getStaticPaths() {
 
 const { project, previous, next } = Astro.props;
 const cs = project.caseStudy!;
+const sections = cs.sections ?? [];
+const photos = cs.photos ?? [];
+const cta = cs.cta ?? {
+  heading: 'Have a problem like this one?',
+  body: "Thirty minutes. We'll tell you whether a custom build is the right answer, or whether something simpler will do.",
+};
 ---
 <Base title={`${project.title} — Apostrophe Software`} description={cs.intro} active="work">
   <section class="cs-intro pad-x">
     <a href="/work" class="cs-back">← All work</a>
-    <div class="eyebrow eyebrow--marked cs-eyebrow"><span class="eyebrow__mark"></span>Case study · {project.tags.join(' · ')}</div>
+    <div class="eyebrow eyebrow--marked cs-eyebrow"><span class="eyebrow__mark"></span>{cs.eyebrow ?? `Case study · ${project.tags.join(' · ')}`}</div>
     <h1 class="heading cs-title">{project.title}</h1>
+    {cs.subtitle && <p class="heading cs-subtitle">{cs.subtitle}</p>}
     <p class="lead cs-lead">{cs.intro}</p>
   </section>
 
@@ -41,7 +48,7 @@ const cs = project.caseStudy!;
   </section>
 
   {cs.results.length > 0 && (
-    <section class="cs-results pad-x" aria-label="Results">
+    <section class="cs-results pad-x" aria-label="Results" style={`--cs-cols: ${cs.results.length}`}>
       {cs.results.map((r) => (
         <div class="cs-results__item">
           <div class="cs-results__value">{r.value}</div>
@@ -51,15 +58,56 @@ const cs = project.caseStudy!;
     </section>
   )}
 
+  {cs.resultsNote && <p class="cs-results-note pad-x">{cs.resultsNote}</p>}
+
+  {sections.length > 0 && (
+    <div class="cs-sections pad-x">
+      {sections.map((sec) => (
+        <section class="cs-section">
+          <h2 class="eyebrow cs-story__label cs-section__label">{sec.label}</h2>
+          <div class="cs-section__body">
+            {sec.body.map((part) =>
+              Array.isArray(part) ? (
+                <ul>{part.map((item) => <li>{item}</li>)}</ul>
+              ) : typeof part === 'string' ? (
+                <p>{part}</p>
+              ) : (
+                <p class="cs-section__source">
+                  <a href={part.href} target="_blank" rel="noopener noreferrer">{part.text}</a>
+                </p>
+              )
+            )}
+          </div>
+        </section>
+      ))}
+    </div>
+  )}
+
+  {photos.length > 0 && (
+    <section class="cs-photos pad-x">
+      <h2 class="heading cs-gallery__title">In the room</h2>
+      <div class="cs-photos__grid">
+        {photos.map((ph) => (
+          <figure class:list={['cs-photo', `cs-photo--${ph.orientation}`]}>
+            <div class="cs-photo__img"><img src={ph.src} alt={ph.alt} loading="lazy" /></div>
+            {ph.caption && <figcaption>{ph.caption}</figcaption>}
+          </figure>
+        ))}
+      </div>
+    </section>
+  )}
+
   {cs.gallery.length > 0 && (
     <section class="cs-gallery pad-x">
-      <h2 class="heading cs-gallery__title">Screens</h2>
-      {cs.gallery.map((g) => (
-        <figure class="cs-gallery__item">
-          <img src={g.src} alt={g.caption} loading="lazy" />
-          <figcaption>{g.caption}</figcaption>
-        </figure>
-      ))}
+      <h2 class="heading cs-gallery__title">{cs.galleryTitle ?? 'Screens'}</h2>
+      <div class:list={['cs-gallery__grid', { 'cs-gallery__grid--multi': cs.gallery.length > 2 }]}>
+        {cs.gallery.map((g) => (
+          <figure class="cs-gallery__item">
+            <img src={g.src} alt={g.caption} loading="lazy" />
+            <figcaption>{g.caption}</figcaption>
+          </figure>
+        ))}
+      </div>
     </section>
   )}
 
@@ -71,8 +119,8 @@ const cs = project.caseStudy!;
   )}
 
   <CtaBand
-    headline="Have a problem like this one?"
-    body="Thirty minutes. We'll tell you whether a custom build is the right answer, or whether something simpler will do."
+    headline={cta.heading}
+    body={cta.body}
     ctaLabel="Book a demo →"
     ctaHref={SITE.bookingUrl}
   />
@@ -84,6 +132,7 @@ const cs = project.caseStudy!;
   .cs-back:hover { box-shadow: inset 0 -9px 0 rgba(31, 200, 169, .35); }
   .cs-eyebrow { margin-bottom: 22px; }
   .cs-title { margin: 0 0 20px; font-size: clamp(38px, 5vw, 60px); line-height: 1.02; }
+  .cs-subtitle { margin: -6px 0 22px; font-size: clamp(19px, 2.2vw, 23px); line-height: 1.3; color: var(--slate); max-width: 34em; }
   .cs-lead { font-size: 19px; line-height: 1.55; max-width: 36em; }
 
   .cs-hero__frame { border: 1.5px solid var(--ink); background: var(--surface); }
@@ -101,14 +150,65 @@ const cs = project.caseStudy!;
   .cs-story__label.is-teal { color: var(--teal-deep); }
   .cs-story p { font-size: 19px; line-height: 1.55; text-wrap: pretty; }
 
-  .cs-results { display: grid; grid-template-columns: repeat(3, 1fr); background: var(--ink); }
+  .cs-results { display: grid; grid-template-columns: repeat(var(--cs-cols, 3), minmax(0, 1fr)); background: var(--ink); }
   .cs-results__item { padding: 34px 24px 32px; border-right: 1px solid var(--rule-dark); }
   .cs-results__item:first-child { padding-left: 0; }
   .cs-results__item:last-child { border-right: 0; }
   .cs-results__value { font-family: var(--font-mono); font-size: 40px; font-weight: 700; line-height: 1; color: var(--white); }
   .cs-results__label { font-size: 14.5px; color: var(--stat-text); margin-top: 9px; }
 
+  .cs-results-note { padding-top: 16px; font-family: var(--font-mono); font-size: 13.2px; line-height: 1.5; color: var(--muted); }
+
+  /* Extra story sections: label on the left, text on the right. */
+  .cs-sections { padding-top: 80px; }
+  .cs-section {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    gap: 16px 56px;
+    padding: 28px 0 48px;
+    border-top: 1.5px solid var(--ink);
+  }
+  .cs-section__label { margin: 0; font-size: inherit; line-height: 1.4; }
+  .cs-section__body { max-width: 38em; }
+  .cs-section__body p { font-size: 18px; line-height: 1.6; text-wrap: pretty; }
+  .cs-section__body p + p,
+  .cs-section__body ul + p { margin-top: 16px; }
+  .cs-section__body .cs-section__source { font-family: var(--font-mono); font-size: 13.2px; line-height: 1.55; color: var(--muted); }
+  .cs-section__source a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+  .cs-section__source a:hover { color: var(--blue); }
+  .cs-section__body ul { margin: 16px 0 0; padding: 0; list-style: none; }
+  .cs-section__body li {
+    position: relative;
+    padding: 9px 0 9px 22px;
+    border-bottom: 1px solid var(--border);
+    font-size: 17px;
+    line-height: 1.5;
+  }
+  .cs-section__body li:first-child { border-top: 1px solid var(--border); }
+  .cs-section__body li::before {
+    content: '';
+    position: absolute;
+    left: 2px;
+    top: 19px;
+    width: 8px;
+    height: 8px;
+    background: var(--teal);
+  }
+
+  /* Photo strip: portraits take one column, landscapes take two. */
+  .cs-photos { padding-top: 48px; }
+  .cs-photos__grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px; }
+  .cs-photo { display: flex; flex-direction: column; margin: 0; }
+  .cs-photo--landscape { grid-column: span 2; }
+  .cs-photo__img { position: relative; height: 360px; border: 1.5px solid var(--border); background: var(--surface); }
+  .cs-photo__img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .cs-photo figcaption { margin-top: 12px; font-family: var(--font-mono); font-size: 13.2px; color: var(--muted); }
+
   .cs-gallery { padding-top: 80px; padding-bottom: 32px; }
+  .cs-gallery__grid--multi { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 32px; }
+  /* With an odd number of images, the first one runs full width so the grid ends evenly. */
+  .cs-gallery__grid--multi .cs-gallery__item:first-child:nth-last-child(odd) { grid-column: 1 / -1; }
+  .cs-gallery__grid--multi .cs-gallery__item img { aspect-ratio: 16 / 9; object-fit: contain; background: var(--surface); }
   .cs-gallery__title { margin-bottom: 28px; font-size: 29px; }
   .cs-gallery__item { margin: 0 0 48px; }
   .cs-gallery__item img { width: 100%; height: auto; border: 1.5px solid var(--border); }
@@ -130,5 +230,18 @@ const cs = project.caseStudy!;
     .cs-results__item { padding: 26px 0; border-right: 0; border-bottom: 1px solid var(--rule-dark); }
     .cs-results__item:last-child { border-bottom: 0; }
     .cs-gallery { padding-top: 56px; }
+    .cs-sections { padding-top: 56px; }
+    .cs-section { grid-template-columns: 1fr; padding-bottom: 40px; }
+    .cs-photos__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+    .cs-photo--landscape { grid-column: span 1; }
+    .cs-photo__img { height: 300px; }
+    .cs-gallery__grid--multi { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    .cs-photos__grid { grid-template-columns: 1fr; }
+    .cs-photo__img { height: auto; }
+    .cs-photo__img img { position: static; height: auto; }
+    .cs-photo--portrait .cs-photo__img img { aspect-ratio: 3 / 4; }
+    .cs-photo--landscape .cs-photo__img img { aspect-ratio: 4 / 3; }
   }
 </style>
