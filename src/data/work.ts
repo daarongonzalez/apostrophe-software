@@ -33,7 +33,12 @@ export interface Project {
      * paragraph (string), a short bullet list (string[]), or a source note
      * that links out ({ text, href }).
      */
-    sections?: { label: string; body: (string | string[] | { text: string; href: string })[] }[];
+    sections?: {
+      label: string;
+      body: (string | string[] | { text: string; href: string })[];
+      /** Full-width image shown after this section's text. A slide shows 16:9, uncropped; a photo shows landscape. */
+      image?: { src: string; alt: string; caption?: string; kind: 'slide' | 'photo' };
+    }[];
     /** Heading over the gallery. Defaults to "Screens". */
     galleryTitle?: string;
     /** Photos from the room, shown as a strip before the gallery. */
@@ -107,6 +112,12 @@ export const projects: Project[] = [
               'No servers to run or maintain.',
             ],
           ],
+          image: {
+            src: '/images/work/project-decisions-api-slide-5.webp',
+            alt: 'Slide titled "Same job. Write questions instead." showing three steps: write the questions, send the evidence, read typed answers',
+            caption: 'From the talk: the same job, with questions instead of a training pipeline',
+            kind: 'slide',
+          },
         },
         {
           label: 'How the big teams did it',
@@ -128,6 +139,12 @@ export const projects: Project[] = [
               href: 'https://airbnb.tech/ai-ml/frontier-quality-at-1-of-the-cost-a-production-benchmark-of-llm-classifiers/',
             },
           ],
+          image: {
+            src: '/images/work/photo-leland-codex-airbnb.webp',
+            alt: "D'Aaron Gonzalez presenting to a seated audience at Leland HQ",
+            caption: "D'Aaron walking the room through how Airbnb built its classifier",
+            kind: 'photo',
+          },
         },
         {
           label: 'How Builders Review works',
@@ -153,6 +170,12 @@ export const projects: Project[] = [
           body: [
             'Builders early in their journey: people starting to ship software and new to thinking about speed, token use and cost. For most of them, this was a first step into decision models.',
           ],
+          image: {
+            src: '/images/work/photo-leland-codex-group-wide.webp',
+            alt: 'Attendees of the Codex Community event gathered for a group photo at Leland HQ',
+            caption: 'The Codex Community crowd at Leland HQ, Lehi',
+            kind: 'photo',
+          },
         },
         {
           label: 'Your first step',
@@ -167,50 +190,7 @@ export const projects: Project[] = [
           ],
         },
       ],
-      photos: [
-        {
-          src: '/images/work/photo-leland-codex-group.webp',
-          alt: 'Attendees of the Codex Community event gathered for a group photo at Leland HQ',
-          caption: 'The Codex Community crowd at Leland HQ',
-          orientation: 'portrait',
-        },
-        {
-          src: '/images/work/photo-leland-codex-opening.webp',
-          alt: "D'Aaron Gonzalez presenting the opening slide to a seated audience",
-          caption: 'Opening the talk: classifiers without the training pipeline',
-          orientation: 'landscape',
-        },
-        {
-          src: '/images/work/photo-leland-codex-evidence.webp',
-          alt: "D'Aaron Gonzalez pointing to a slide about a single Decisions API call",
-          caption: 'One evidence bundle, twelve answers',
-          orientation: 'portrait',
-        },
-        {
-          src: '/images/work/photo-leland-codex-airbnb.webp',
-          alt: "D'Aaron Gonzalez explaining how Airbnb built its policy classifier",
-          caption: 'How Airbnb built one policy classifier',
-          orientation: 'landscape',
-        },
-        {
-          src: '/images/work/photo-leland-codex-answers.webp',
-          alt: "D'Aaron Gonzalez presenting the three kinds of answer the Decisions API returns",
-          caption: 'Three shapes of answer',
-          orientation: 'landscape',
-        },
-      ],
-      galleryTitle: 'From the talk',
-      gallery: [
-        { src: '/images/work/project-decisions-api-slide-1.webp', caption: 'Classifiers without the training pipeline' },
-        { src: '/images/work/project-decisions-api-slide-3.webp', caption: 'The job: evidence in, a defined answer out' },
-        { src: '/images/work/project-decisions-api-slide-4.webp', caption: 'How Airbnb built one policy classifier, start to finish' },
-        { src: '/images/work/project-decisions-api-slide-5.webp', caption: 'The same job with the Decisions API: write questions instead' },
-        { src: '/images/work/project-decisions-api-slide-6.webp', caption: 'Three shapes of answer: yes or no, a category, or a score' },
-        { src: '/images/work/project-decisions-api-slide-7.webp', caption: 'One bundle of evidence, twelve answers in a single call' },
-        { src: '/images/work/project-decisions-api-slide-9.webp', caption: 'The four checks every portfolio must pass' },
-        { src: '/images/work/project-decisions-api-slide-10.webp', caption: 'The browser captures the portfolio, the Decisions API judges it' },
-        { src: '/images/work/project-decisions-api-slide-13.webp', caption: 'Anything uncertain goes to a person' },
-      ],
+      gallery: [],
       cta: {
         heading: 'Have a decision your team makes every week?',
         body: 'Thirty minutes. Tell us the call your team keeps making by hand, and we’ll show you whether a decision model can make it faster and cheaper.',
