@@ -78,6 +78,12 @@ const cta = cs.cta ?? {
               )
             )}
           </div>
+          {sec.image && (
+            <figure class:list={['cs-section__figure', `cs-section__figure--${sec.image.kind}`]}>
+              <img src={sec.image.src} alt={sec.image.alt} loading="lazy" />
+              {sec.image.caption && <figcaption>{sec.image.caption}</figcaption>}
+            </figure>
+          )}
         </section>
       ))}
     </div>
@@ -176,6 +182,18 @@ const cta = cs.cta ?? {
   .cs-section__body .cs-section__source { font-family: var(--font-mono); font-size: 13.2px; line-height: 1.55; color: var(--muted); }
   .cs-section__source a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
   .cs-section__source a:hover { color: var(--blue); }
+  .cs-section__figure { grid-column: 1 / -1; margin: 32px 0 0; }
+  .cs-section__figure img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1.5px solid var(--border);
+    border-radius: 16px;
+    background: var(--surface);
+  }
+  .cs-section__figure--slide img { aspect-ratio: 16 / 9; object-fit: contain; }
+  .cs-section__figure--photo img { aspect-ratio: 4 / 3; object-fit: cover; }
+  .cs-section__figure figcaption { margin-top: 12px; font-family: var(--font-mono); font-size: 13.2px; color: var(--muted); }
   .cs-section__body ul { margin: 16px 0 0; padding: 0; list-style: none; }
   .cs-section__body li {
     position: relative;
